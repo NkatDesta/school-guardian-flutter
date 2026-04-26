@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+.env.*
+uploads/
+logs/
+server_log.txt
+*.log
+*.txt
+*.tsbuildinfo
