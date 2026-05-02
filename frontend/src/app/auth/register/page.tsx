@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield, Leaf } from 'lucide-react'
+import { Button } from '../../../components/ui/Button'
+import { Input } from '../../../components/ui/Input'
 
 interface FormData {
   fullName: string
@@ -257,16 +257,16 @@ export default function RegisterPage() {
           placeholder="Enter your child's full name"
           required
         />
-        <p className="text-xs text-gray-500 mt-1">Please provide the child's legal name for school records</p>
+        <p className="text-xs text-brand-text mt-1 font-medium italic">Please provide the child's legal name for school records</p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Relationship to Student *</label>
+        <label className="block text-sm font-bold text-brand-heading mb-1 ml-1 uppercase text-[10px] tracking-widest">Relationship to Student *</label>
         <select
           name="relationshipType"
           value={formData.relationshipType}
           onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary outline-none transition-all text-sm"
+          className="w-full px-4 py-3 bg-brand-bg border border-brand-100 rounded-2xl focus:ring-2 focus:ring-brand-primary/10 focus:border-brand-primary outline-none transition-all text-sm font-bold text-brand-heading"
           required
         >
           <option value="">Select relationship...</option>
@@ -301,7 +301,7 @@ export default function RegisterPage() {
   const renderStep2 = () => (
     <form onSubmit={handleStep2Submit} className="space-y-6">
       <div className="text-center">
-        <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-100">
           <Shield className="h-8 w-8 text-brand-primary" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900">Verify Your Phone</h3>
@@ -310,8 +310,8 @@ export default function RegisterPage() {
           <strong className="text-gray-900">{formData.phoneNo}</strong>
         </p>
         {studentName && (
-          <div className="mt-4 p-2 bg-brand-50 text-brand-700 rounded-lg text-sm border border-brand-100 font-medium">
-            Registering for student: <span className="text-brand-900 font-bold">{studentName}</span>
+          <div className="mt-4 p-2 bg-brand-50 text-brand-primary rounded-lg text-sm border border-brand-100 font-bold">
+            Registering for student: <span className="text-brand-primary uppercase tracking-tighter">{studentName}</span>
           </div>
         )}
       </div>
@@ -360,7 +360,7 @@ export default function RegisterPage() {
   const renderStep3 = () => (
     <form onSubmit={handleStep3Submit} className="space-y-6">
       <div className="text-center">
-        <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-100">
           <Upload className="h-8 w-8 text-brand-primary" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900">Upload Documents</h3>
@@ -380,19 +380,19 @@ export default function RegisterPage() {
           { id: 'idFront', label: 'National ID / Kebele ID - Front Side', field: 'idFront' },
           { id: 'idBack', label: 'National ID / Kebele ID - Back Side', field: 'idBack' }
         ].map((doc) => (
-          <div key={doc.id} className="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-brand-primary hover:bg-brand-50/30 transition-all cursor-pointer group">
+          <div key={doc.id} className="border-2 border-dashed border-brand-100 rounded-2xl p-4 hover:border-brand-primary hover:bg-brand-50/50 transition-all cursor-pointer group">
             <label className="block cursor-pointer">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg transition-colors ${documents[doc.field as keyof Documents] ? 'bg-green-100 text-green-600' : 'bg-brand-100 text-brand-primary group-hover:bg-brand-primary group-hover:text-white'}`}>
+                <div className={`p-2 rounded-xl transition-colors ${documents[doc.field as keyof Documents] ? 'bg-brand-success/10 text-brand-success' : 'bg-brand-100 text-brand-primary group-hover:bg-brand-primary group-hover:text-white'}`}>
                   <Upload className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <p className={`font-medium text-sm ${documents[doc.field as keyof Documents] ? 'text-green-700' : 'text-gray-900'}`}>
+                  <p className={`font-bold text-sm ${documents[doc.field as keyof Documents] ? 'text-brand-success' : 'text-brand-heading'}`}>
                     {documents[doc.field as keyof Documents] ? (documents[doc.field as keyof Documents] as File).name : doc.label}
                   </p>
-                  <p className="text-xs text-gray-500">PDF, JPG, or PNG (max 5MB)</p>
+                  <p className="text-xs text-brand-text">PDF, JPG, or PNG (max 5MB)</p>
                 </div>
-                {documents[doc.field as keyof Documents] && <CheckCircle className="h-5 w-5 text-green-600" />}
+                {documents[doc.field as keyof Documents] && <CheckCircle className="h-5 w-5 text-brand-success" />}
               </div>
               <input
                 type="file"
@@ -425,8 +425,8 @@ export default function RegisterPage() {
 
   const renderStep4 = () => (
     <div className="text-center space-y-6">
-      <div className="bg-green-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-sm">
-        <CheckCircle className="h-10 w-10 text-green-600" />
+      <div className="bg-brand-success/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-sm border border-brand-success/20">
+        <CheckCircle className="h-10 w-10 text-brand-success" />
       </div>
 
       <div>
@@ -451,11 +451,12 @@ export default function RegisterPage() {
         </div>
       </div>
 
-      <div className="bg-brand-50 border border-brand-100 rounded-xl p-5 text-left">
-        <h4 className="font-bold text-brand-900 mb-3 flex items-center gap-2">
+      <div className="bg-brand-50 border border-brand-100 rounded-2xl p-5 text-left relative overflow-hidden">
+        <Leaf className="absolute -bottom-4 -right-4 w-16 h-16 text-brand-accent/10 -rotate-12" />
+        <h4 className="font-black text-brand-primary mb-3 flex items-center gap-2 uppercase text-xs tracking-widest">
           <Shield className="h-4 w-4" /> What happens next?
         </h4>
-        <ul className="text-sm text-brand-800 space-y-2">
+        <ul className="text-sm text-brand-text space-y-2 relative z-10 font-medium">
           <li className="flex gap-2 items-start"><span className="w-1.5 h-1.5 bg-brand-primary rounded-full mt-1.5" /> The registrar will review your documents (1-2 business days)</li>
           <li className="flex gap-2 items-start"><span className="w-1.5 h-1.5 bg-brand-primary rounded-full mt-1.5" /> You will receive an email notification once approved</li>
           <li className="flex gap-2 items-start"><span className="w-1.5 h-1.5 bg-brand-primary rounded-full mt-1.5" /> You can then log in to access your child's information</li>
@@ -475,18 +476,19 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-brand-bg flex justify-center p-4 py-12 md:py-16 overflow-y-auto">
       <div className="w-full max-w-lg my-auto">
         {/* Step Indicators */}
-        <div className="flex items-center justify-between mb-10 px-4">
+        <div className="flex items-center justify-between mb-10 px-4 relative">
+          <Leaf className="absolute -left-12 -top-8 w-12 h-12 text-brand-accent/20 -rotate-45" />
           {[1, 2, 3, 4].map((s) => (
             <div key={s} className="flex items-center flex-1 last:flex-none">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-500 ${
-                step >= s ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20 scale-110' : 'bg-white text-gray-400 border-2 border-gray-100'
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-all duration-500 ${
+                step >= s ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20 scale-110' : 'bg-white text-brand-text border-2 border-brand-100'
               }`}>
                 {step > s ? <CheckCircle className="h-6 w-6" /> : s}
               </div>
               {s < 4 && (
-                <div className="flex-1 mx-2 h-1 bg-gray-100 rounded-full overflow-hidden">
+                <div className="flex-1 mx-2 h-1 bg-brand-100 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-brand-primary transition-all duration-500" 
+                    className="h-full bg-linear-to-r from-brand-primary to-brand-accent transition-all duration-500" 
                     style={{ width: step > s ? '100%' : '0%' }}
                   />
                 </div>
@@ -495,10 +497,11 @@ export default function RegisterPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-900/5 p-8 md:p-10 border border-gray-50">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-black text-gray-900 tracking-tight">Guardian Registration</h2>
-            <p className="text-gray-500 mt-2 text-sm font-medium">
+        <div className="bg-brand-white rounded-[3rem] shadow-2xl shadow-brand-primary/5 p-8 md:p-10 border border-brand-100 relative overflow-hidden">
+          <Leaf className="absolute -top-6 -right-6 w-20 h-20 text-brand-accent/5 rotate-90" />
+          <div className="text-center mb-8 relative z-10">
+            <h2 className="text-3xl font-black text-brand-heading tracking-tight uppercase">Registration</h2>
+            <p className="text-brand-text mt-2 text-sm font-bold">
               {step === 1 && 'Create your secure guardian account'}
               {step === 2 && 'Verify your mobile phone number'}
               {step === 3 && 'Upload necessary school documents'}

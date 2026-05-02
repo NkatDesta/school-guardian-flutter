@@ -270,4 +270,89 @@ export class AuthController {
       });
     }
   }
+
+  async forgotPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+      
+      const [users] = await sequelize.query('SELECT user_id FROM Users WHERE email = ?', {
+        replacements: [email]
+      });
+
+      const user = (users as any[])[0];
+      if (!user) {
+        // Return success even if user not found to prevent email enumeration
+        res.status(200).json({
+          success: true,
+          message: 'If an account exists with this email, a reset token has been generated.',
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      const resetToken = AuthService.generateResetToken();
+      const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+      await sequelize.query('UPDATE Users SET reset_token = ?, reset_token_expiry = ? WHERE user_id = ?', {
+        replacements: [resetToken, resetTokenExpiry, user.user_id]
+      });
+
+      console.log(`Password reset requested for ${email}. Token: ${resetToken}`);
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset token generated.',
+        data: { token: resetToken }, // For demo, we return it. In production, this would be an email.
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({
+        success: false,
+        error: { code: 'FORGOT_PASSWORD_FAILED', message: 'Failed to process request' },
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+    try {
+      const { token, newPassword } = req.body;
+
+      const [users] = await sequelize.query(
+        'SELECT user_id FROM Users WHERE reset_token = ? AND reset_token_expiry > NOW()',
+        { replacements: [token] }
+      );
+
+      const user = (users as any[])[0];
+      if (!user) {
+        res.status(400).json({
+          success: false,
+          error: { code: 'INVALID_TOKEN', message: 'Invalid or expired reset token' },
+          timestamp: new Date().toISOString(),
+        });
+        return;
+      }
+
+      const passwordHash = await AuthService.hashPassword(newPassword);
+
+      await sequelize.query(
+        'UPDATE Users SET password_hash = ?, reset_token = NULL, reset_token_expiry = NULL WHERE user_id = ?',
+        { replacements: [passwordHash, user.user_id] }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset successfully. You can now log in with your new password.',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({
+        success: false,
+        error: { code: 'RESET_PASSWORD_FAILED', message: 'Failed to reset password' },
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
 }

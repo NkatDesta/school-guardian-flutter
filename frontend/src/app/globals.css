@@ -1,33 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Palette */
-  --color-brand-50: #f0fdfa;
-  --color-brand-100: #ccfbf1;
-  --color-brand-200: #99f6e4;
-  --color-brand-300: #5eead4;
-  --color-brand-400: #2dd4bf;
-  --color-brand-500: #14b8a6;
-  --color-brand-600: #0d9488;
-  --color-brand-700: #0f766e;
-  --color-brand-800: #115e59;
-  --color-brand-900: #134e4a;
-  --color-brand-950: #042f2e;
+  /* Nature/Forest Brand Palette */
+  --color-brand-bg: #FAF7F1;
+  --color-brand-white: #FFFFFF;
+  --color-brand-primary: #2E5A33;
+  --color-brand-primaryHover: #1e3b21;
+  --color-brand-secondary: #5A8D63;
+  --color-brand-header: #2E5A33;
+  --color-brand-heading: #333333;
+  --color-brand-text: #666666;
+  --color-brand-accent: #A4C639;
+  --color-brand-success: #33A853;
+
+  /* Specific Shades */
+  --color-brand-50: #f4f7f4;
+  --color-brand-100: #e5ede6;
+  --color-brand-200: #ceddcf;
+  --color-brand-500: #2E5A33;
   
-  --color-brand-primary: #00bfa5;
-  --color-brand-primaryHover: #009688;
-  --color-brand-header: #004d40;
-  --color-brand-bg: #f8fafc;
-  --color-brand-input: #f0f7ff;
-  --color-brand-tabs: #f0f4f8;
-  --color-brand-heading: #1a2b3c;
-  --color-brand-light: #20b2aa;
-
-  /* Status Colors */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-
   /* Typography */
   --font-sans: "Inter", "ui-sans-serif", "system-ui";
 }

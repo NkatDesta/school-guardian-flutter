@@ -13,11 +13,11 @@ export function Button({
   children, 
   ...props 
 }: ButtonProps) {
-  const baseClasses = 'inline-flex items-center justify-center border border-transparent font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+  const baseClasses = 'inline-flex items-center justify-center border border-transparent font-bold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98]'
   const variantClasses = {
-    default: 'bg-brand-primary text-white hover:bg-brand-primaryHover',
-    primary: 'bg-brand-primary text-white hover:bg-brand-primaryHover',
-    outline: 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+    default: 'bg-brand-primary text-white hover:bg-brand-primaryHover shadow-lg shadow-brand-primary/20',
+    primary: 'bg-brand-primary text-white hover:bg-brand-primaryHover shadow-lg shadow-brand-primary/20',
+    outline: 'bg-brand-white text-brand-secondary border-brand-100 hover:bg-brand-bg'
   }
   const sizeClasses = {
     default: 'px-4 py-2 text-sm',

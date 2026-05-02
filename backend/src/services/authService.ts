@@ -20,6 +20,11 @@ export class AuthService {
     return jwt.sign(payload, JWT_SECRET, { algorithm: 'HS256' });
   }
 
+  static generateResetToken(): string {
+    // For demo, a 6-digit OTP-style token or simple random string
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
   static verifyToken(token: string): JwtPayload {
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;

@@ -17,14 +17,14 @@ export function Input({
   return (
     <div className="space-y-2">
       {label && (
-        <label htmlFor={props?.id || 'input'} className="block text-sm font-medium text-gray-700">
+        <label htmlFor={props?.id || 'input'} className="block text-[10px] font-black text-brand-heading uppercase tracking-widest ml-1">
           {label}
         </label>
       )}
       <div className="relative group">
         {Icon && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none transition-colors group-focus-within:text-brand-primary">
-            <Icon className="h-5 w-5 text-gray-400" />
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2 pointer-events-none transition-colors group-focus-within:text-brand-primary z-10">
+            <Icon className="h-5 w-5 text-brand-accent/60" />
           </div>
         )}
         <input
@@ -34,7 +34,7 @@ export function Input({
           placeholder={placeholder}
           required={required}
           disabled={disabled}
-          className={`block w-full ${Icon ? 'pl-10' : 'px-3'} py-2 border ${error ? 'border-red-500' : 'border-gray-300'} rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${className}`}
+          className={`block w-full ${Icon ? 'pl-11' : 'px-4'} py-3.5 bg-brand-bg border ${error ? 'border-brand-error' : 'border-brand-100'} rounded-2xl text-sm font-bold text-brand-heading placeholder:text-brand-text/40 focus:outline-none focus:ring-4 focus:ring-brand-primary/5 focus:border-brand-primary focus:bg-brand-white transition-all ${className}`}
           value={value}
           onChange={onChange}
           {...props}
