@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield, Leaf } from 'lucide-react'
+import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield, Leaf, GraduationCap } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/Input'
 
