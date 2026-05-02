@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield, Leaf, GraduationCap } from 'lucide-react'
+import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield, Leaf, GraduationCap, Eye, EyeOff } from 'lucide-react'
 import { Button } from '../../../components/ui/Button'
 import { Input } from '../../../components/ui/Input'
 
@@ -34,6 +34,8 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false)
   const [registrationId, setRegistrationId] = useState<number | null>(null)
   const [studentName, setStudentName] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
@@ -217,22 +219,26 @@ export default function RegisterPage() {
         <Input
           label="Password *"
           icon={Lock}
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           name="password"
           value={formData.password}
           onChange={handleInputChange}
           placeholder="Min 8 characters"
           minLength={8}
+          rightIcon={showPassword ? EyeOff : Eye}
+          onRightIconClick={() => setShowPassword(!showPassword)}
           required
         />
         <Input
           label="Confirm Password *"
           icon={Lock}
-          type="password"
+          type={showConfirmPassword ? 'text' : 'password'}
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleInputChange}
           placeholder="Confirm password"
+          rightIcon={showConfirmPassword ? EyeOff : Eye}
+          onRightIconClick={() => setShowConfirmPassword(!showConfirmPassword)}
           required
         />
       </div>
