@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { 
-  GraduationCap, 
-  Leaf, 
-  Menu, 
-  X, 
-  ChevronRight, 
-  Shield, 
-  MessageSquare, 
-  Bell, 
+import {
+  GraduationCap,
+  Leaf,
+  Menu,
+  X,
+  ChevronRight,
+  Shield,
+  MessageSquare,
+  Bell,
   BarChart3,
   Users,
   Target,
@@ -77,9 +77,8 @@ export default function HomePage() {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className={`text-xs font-bold uppercase tracking-widest transition-colors hover:text-brand-accent ${
-                  activeSection === item.id ? 'text-brand-accent' : 'text-white/80'
-                }`}
+                className={`text-xs font-bold uppercase tracking-widest transition-colors hover:text-brand-accent ${activeSection === item.id ? 'text-brand-accent' : 'text-white/80'
+                  }`}
               >
                 {item.label}
               </button>
@@ -139,21 +138,21 @@ export default function HomePage() {
             <Leaf className="text-brand-primary w-4 h-4" />
             <span className="text-brand-primary text-xs font-black uppercase tracking-widest">Welcome to Hawi Dandi Boru</span>
           </div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black text-brand-heading mb-6 tracking-tighter leading-none">
             Digital Parent-School <br />
             <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-accent">
               Communication
             </span>
           </h2>
-          
+
           <p className="text-xl text-brand-text mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-            A secure, role-controlled, and structured platform enabling seamless interaction between 
+            A secure, role-controlled, and structured platform enabling seamless interaction between
             guardians, teachers, and school administrators.
           </p>
-          
+
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-            <button 
+            <button
               onClick={() => scrollToSection('about-us')}
               className="px-12 py-5 text-xl bg-linear-to-r from-brand-primary to-brand-accent hover:opacity-90 text-white font-black rounded-2xl transition-all shadow-2xl shadow-brand-primary/20 transform hover:scale-105"
             >
@@ -170,8 +169,8 @@ export default function HomePage() {
             <h2 className="text-brand-primary text-sm font-black uppercase tracking-[0.3em] mb-4">About Our System</h2>
             <h3 className="text-4xl md:text-5xl font-black text-brand-heading tracking-tighter mb-6">Our Vision & Mission</h3>
             <p className="text-lg text-brand-text max-w-3xl mx-auto font-medium">
-              The Hawi Dandi Boru School Communication System is a secure, web-based platform designed 
-              to strengthen the connection between parents and the school while ensuring 
+              The Hawi Dandi Boru School Communication System is a secure, web-based platform designed
+              to strengthen the connection between parents and the school while ensuring
               accountability and transparency.
             </p>
           </div>
@@ -187,7 +186,7 @@ export default function HomePage() {
               </div>
               <h4 className="text-2xl font-black text-brand-heading mb-4">Our Vision</h4>
               <p className="text-brand-text text-lg leading-relaxed font-medium">
-                To enhance parental involvement and streamline school communications, 
+                To enhance parental involvement and streamline school communications,
                 ensuring every child’s educational progress is effectively monitored and supported.
               </p>
             </div>
@@ -327,11 +326,11 @@ export default function HomePage() {
         <div className="absolute top-0 right-0 p-20 opacity-[0.03] text-brand-primary">
           <Leaf size={300} />
         </div>
-        
+
         <div className="container mx-auto px-4 text-center relative z-10">
           <h3 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-brand-heading">Contact & Support</h3>
           <p className="text-brand-primary font-black uppercase tracking-[0.2em] mb-12">Get In Touch With Us</p>
-          
+
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="p-8 bg-brand-bg rounded-3xl border border-brand-100">
               <h5 className="text-brand-primary font-black uppercase tracking-widest mb-3">Location</h5>
@@ -346,10 +345,8 @@ export default function HomePage() {
               <p className="text-lg font-bold text-brand-heading">info@school.edu</p>
             </div>
           </div>
-          
-          <div className="mt-8 text-brand-primary/40 font-bold uppercase tracking-widest text-sm">
-            Hawi Dandi Boru School
-          </div>
+
+
         </div>
       </section>
 
@@ -357,7 +354,7 @@ export default function HomePage() {
       <footer className="bg-brand-bg py-16 border-t border-brand-100">
         <div className="container mx-auto px-4">
           {/* Logo Removed */}
-          
+
           <div className="flex flex-col items-center gap-4 text-center">
             <p className="text-brand-text/60 text-sm font-medium">
               Strengthening the bond between parents and education.
