@@ -155,9 +155,11 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <button 
               onClick={() => scrollToSection('about-us')}
-              className="px-10 py-6 text-xl bg-white text-brand-heading border-2 border-brand-100 hover:border-brand-primary font-black rounded-2xl transition-all shadow-xl shadow-brand-primary/5"
+              className="px-10 py-6 text-xl bg-white border-2 border-brand-100 hover:border-brand-primary font-black rounded-2xl transition-all shadow-xl shadow-brand-primary/5 group"
             >
-              Learn More
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-accent group-hover:from-brand-heading group-hover:to-brand-primary transition-all">
+                Learn More
+              </span>
             </button>
           </div>
         </div>
