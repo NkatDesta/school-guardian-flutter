@@ -155,11 +155,9 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
             <button 
               onClick={() => scrollToSection('about-us')}
-              className="px-10 py-6 text-xl bg-white border-2 border-brand-100 hover:border-brand-primary font-black rounded-2xl transition-all shadow-xl shadow-brand-primary/5 group"
+              className="px-12 py-5 text-xl bg-linear-to-r from-brand-primary to-brand-accent hover:opacity-90 text-white font-black rounded-2xl transition-all shadow-2xl shadow-brand-primary/20 transform hover:scale-105"
             >
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-primary to-brand-accent group-hover:from-brand-heading group-hover:to-brand-primary transition-all">
-                Learn More
-              </span>
+              Learn More
             </button>
           </div>
         </div>
@@ -358,28 +356,7 @@ export default function HomePage() {
       {/* FOOTER */}
       <footer className="bg-brand-bg py-16 border-t border-brand-100">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-            <div className="flex items-center space-x-3">
-              <div className="bg-brand-primary p-2 rounded-xl shadow-lg shadow-brand-primary/10">
-                <GraduationCap className="text-white w-6 h-6" />
-              </div>
-              <span className="font-black text-brand-heading text-2xl tracking-tighter uppercase">
-                Digital <span className="text-brand-primary">School</span>
-              </span>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-6">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-brand-text/60 hover:text-brand-primary text-xs font-bold uppercase tracking-widest transition-colors"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Logo Removed */}
           
           <div className="h-px w-full bg-brand-primary/10 mb-8" />
           
