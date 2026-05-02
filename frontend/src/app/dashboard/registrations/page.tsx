@@ -47,7 +47,7 @@ interface RegistrationRequest {
 }
 
 interface Student {
-  student_id: number
+  studentId: number
   fullName: string
   classLevel?: string
 }
@@ -124,7 +124,7 @@ export default function RegistrationsPage() {
   const handleApprove = async (registrationId: number) => {
     try {
       const token = localStorage.getItem('token')
-      if (!selectedStudent || !selectedStudent.student_id) {
+      if (!selectedStudent || !selectedStudent.studentId) {
         setError('Please search and select a student to link with this guardian')
         return
       }
@@ -136,7 +136,7 @@ export default function RegistrationsPage() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ studentId: selectedStudent.student_id })
+        body: JSON.stringify({ studentId: selectedStudent.studentId })
       })
 
       const data = await response.json()
@@ -356,6 +356,8 @@ export default function RegistrationsPage() {
                         onClick={() => {
                           setSelectedRequest(req)
                           setSelectedStudent(null)
+                          setError('')
+                          setSuccess('')
                           setShowDetailModal(true)
                         }}
                         className="p-2 bg-brand-bg text-brand-primary rounded-xl border border-brand-100 hover:bg-brand-primary hover:text-white transition-all group-hover:scale-105 shadow-sm"
@@ -391,6 +393,20 @@ export default function RegistrationsPage() {
                 <X size={24} className="text-brand-heading" />
               </button>
             </div>
+
+            {error && (
+              <div className="px-10 py-4 bg-red-50 text-red-600 font-bold text-sm border-b border-red-100 flex items-center gap-2">
+                <AlertCircle size={16} />
+                {error}
+              </div>
+            )}
+            
+            {success && (
+              <div className="px-10 py-4 bg-brand-success/10 text-brand-success font-bold text-sm border-b border-brand-success/20 flex items-center gap-2">
+                <CheckCircle size={16} />
+                {success}
+              </div>
+            )}
 
             {/* Body */}
             <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
@@ -436,12 +452,12 @@ export default function RegistrationsPage() {
                             <div className="bg-white border border-brand-100 rounded-2xl shadow-xl overflow-hidden max-h-40 overflow-y-auto">
                               {searchResults.map(s => (
                                 <button
-                                  key={s.student_id}
+                                  key={s.studentId}
                                   onClick={() => setSelectedStudent(s)}
                                   className="w-full text-left px-5 py-3 text-sm text-brand-text hover:bg-brand-bg hover:text-brand-primary transition-colors flex justify-between font-bold"
                                 >
                                   <span>{s.fullName}</span>
-                                  <span className="text-brand-accent italic">#{s.student_id}</span>
+                                  <span className="text-brand-accent italic">#{s.studentId}</span>
                                 </button>
                               ))}
                             </div>

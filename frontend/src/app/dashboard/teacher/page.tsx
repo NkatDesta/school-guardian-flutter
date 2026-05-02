@@ -19,7 +19,8 @@ import {
 } from 'lucide-react'
 import {
   useTeacherClasses,
-  useTeacherHomework
+  useTeacherHomework,
+  useTeacherStudents
 } from '../../../hooks/useTeacherData'
 
 interface UserData {
@@ -32,9 +33,11 @@ interface UserData {
 export default function TeacherDashboard() {
   const [user, setUser] = useState<UserData | null>(null)
   const router = useRouter()
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
 
   const { data: classes } = useTeacherClasses()
   const { data: homework } = useTeacherHomework()
+  const { data: students, isLoading: isLoadingStudents } = useTeacherStudents(selectedClassId || '')
 
   useEffect(() => {
     const userData = localStorage.getItem('user')
@@ -78,14 +81,6 @@ export default function TeacherDashboard() {
       color: 'text-brand-accent',
       bgColor: 'bg-brand-bg'
     },
-    {
-      title: 'Performance',
-      subtitle: 'Class average',
-      value: '88%',
-      icon: Activity,
-      color: 'text-brand-success',
-      bgColor: 'bg-brand-bg'
-    }
   ]
 
   return (
@@ -97,27 +92,16 @@ export default function TeacherDashboard() {
             <h1 className="text-4xl font-black text-brand-heading tracking-tight">
               Greetings, {user.fullName.split(' ')[0]}!
             </h1>
-            <p className="text-brand-text mt-2 text-lg font-medium">
-              You have {classes?.length || 2} active classrooms to manage today.
-            </p>
             <div className="inline-block mt-4 px-4 py-1.5 bg-brand-primary text-white rounded-full text-xs font-black uppercase tracking-widest">
               {user.role === 'homeroom_teacher' ? 'Homeroom Teacher' : 'Subject Teacher'}
             </div>
           </div>
-          <div className="flex gap-3 relative z-10">
-            <Link 
-              href="/dashboard/homework"
-              className="flex items-center gap-2 px-6 py-3 bg-brand-primary text-white rounded-2xl font-bold shadow-lg shadow-brand-primary/20 hover:scale-105 active:scale-95 transition-all"
-            >
-              <PlusCircle size={20} />
-              CREATE ASSIGNMENT
-            </Link>
-          </div>
+
           <Leaf className="absolute -bottom-8 -right-8 text-brand-accent/10 rotate-12" size={160} />
         </header>
 
         {/* Stats Grid - Standard Corners */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((stat, i) => {
             const Icon = stat.icon
             return (
@@ -140,12 +124,6 @@ export default function TeacherDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Recent Activity */}
           <div className="lg:col-span-2 bg-brand-white rounded-3xl shadow-xl shadow-brand-primary/5 border border-brand-100 p-8 flex flex-col h-full">
-            <div className="flex items-center justify-between mb-8">
-              <h3 className="text-2xl font-black text-brand-heading flex items-center gap-3">
-                <Clock className="text-brand-primary" />
-                Instructional Stream
-              </h3>
-            </div>
 
             <div className="flex-1 space-y-6">
               {[
@@ -182,24 +160,69 @@ export default function TeacherDashboard() {
               Classrooms
             </h3>
             <div className="space-y-4 flex-1">
-              {classes?.slice(0, 4).map((cls: any, i: number) => (
-                <div key={i} className="p-5 bg-brand-bg rounded-2xl border border-brand-100 group hover:border-brand-primary/20 transition-all cursor-pointer">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h4 className="font-bold text-brand-heading">{cls.classLevel}</h4>
-                      <p className="text-xs text-brand-text font-semibold uppercase">Academic Year {cls.academicYear}</p>
+              {classes?.slice(0, 4).map((cls: any, i: number) => {
+                const isExpanded = selectedClassId === cls.classId || selectedClassId === cls.id;
+                const activeId = cls.classId || cls.id;
+                
+                return (
+                  <div key={i} className="bg-brand-bg rounded-2xl border border-brand-100 overflow-hidden transition-all shadow-sm">
+                    {/* Class Header (Clickable) */}
+                    <div 
+                      onClick={() => setSelectedClassId(isExpanded ? null : activeId)}
+                      className="p-5 cursor-pointer hover:bg-brand-primary/5 transition-colors group flex justify-between items-center"
+                    >
+                      <div>
+                        <h4 className="font-bold text-brand-heading text-lg flex items-center gap-2">
+                          {cls.classLevel || cls.name}
+                        </h4>
+                        <p className="text-xs text-brand-text font-semibold uppercase mt-1">Academic Year {cls.academicYear}</p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-brand-primary font-black text-xs border border-brand-100 group-hover:border-brand-primary/30">
+                          {cls.totalStudents || 12}
+                        </div>
+                        <ChevronRight 
+                          size={20} 
+                          className={`text-brand-text transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} 
+                        />
+                      </div>
                     </div>
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-brand-primary font-black text-xs">
-                      {cls.totalStudents || 12}
-                    </div>
+
+                    {/* Expandable Student List */}
+                    {isExpanded && (
+                      <div className="border-t border-brand-100 bg-white p-5 animate-fadeIn">
+                        <h5 className="text-[10px] font-black uppercase tracking-widest text-brand-text mb-4">Student Roster</h5>
+                        {isLoadingStudents ? (
+                          <div className="flex justify-center p-4">
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-primary"></div>
+                          </div>
+                        ) : students && students.length > 0 ? (
+                          <div className="space-y-2 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                            {students.map((student: any) => (
+                              <div key={student.studentId} className="flex items-center gap-3 p-3 rounded-xl hover:bg-brand-bg border border-transparent hover:border-brand-100 transition-colors">
+                                <div className="w-8 h-8 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold text-xs">
+                                  {student.fullName.charAt(0)}
+                                </div>
+                                <div className="flex-1">
+                                  <p className="text-sm font-bold text-brand-heading">{student.fullName}</p>
+                                  <p className="text-[10px] text-brand-text font-semibold uppercase">ID: {student.studentId}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-sm text-brand-text italic text-center py-4">No students enrolled yet.</p>
+                        )}
+                      </div>
+                    )}
                   </div>
-                </div>
-              )) || (
-                <p className="text-brand-text text-center font-medium italic mt-10">No active classes found.</p>
-              )}
+                )
+              }) || (
+                  <p className="text-brand-text text-center font-medium italic mt-10">No active classes found.</p>
+                )}
             </div>
             <button className="mt-8 w-full py-4 bg-brand-primary text-white font-black text-xs uppercase rounded-2xl shadow-lg shadow-brand-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-               MANAGE ALL STUDENTS
+              MANAGE ALL STUDENTS
             </button>
           </div>
         </div>

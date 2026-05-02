@@ -94,17 +94,17 @@ router.get(
 );
 
 router.get(
-  '/registrar/:registrationId',
-  authenticateToken,
-  checkRole([UserRole.REGISTRAR, UserRole.DIRECTOR]),
-  getRegistrationDetails
-);
-
-router.get(
   '/registrar/students/search',
   authenticateToken,
   checkRole([UserRole.REGISTRAR]),
   searchStudents
+);
+
+router.get(
+  '/registrar/:registrationId',
+  authenticateToken,
+  checkRole([UserRole.REGISTRAR, UserRole.DIRECTOR]),
+  getRegistrationDetails
 );
 
 router.post(

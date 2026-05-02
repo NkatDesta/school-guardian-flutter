@@ -212,6 +212,9 @@ export default function RegisterPage() {
         value={formData.phoneNo}
         onChange={handleInputChange}
         placeholder="+251 911 234 567"
+        pattern="^\+?[0-9\s\-]{9,15}$"
+        title="Please enter a valid phone number (e.g. +251 911 234 567)"
+        maxLength={15}
         required
       />
 

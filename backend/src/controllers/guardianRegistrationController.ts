@@ -40,6 +40,16 @@ export const validateRegistration = async (req: Request, res: Response): Promise
       return;
     }
 
+    // Validate phone number format (must be numeric, optional '+', max 15 chars)
+    const phoneRegex = /^\+?[0-9\s\-]{9,15}$/;
+    if (!phoneRegex.test(phoneNo)) {
+      res.status(400).json({
+        success: false,
+        error: { code: 'INVALID_PHONE', message: 'Invalid phone number. Please enter a valid number (max 15 characters).' }
+      });
+      return;
+    }
+
     // Validate password strength
     if (password.length < 8) {
       res.status(400).json({
@@ -240,6 +250,18 @@ export const completeRegistration = async (req: Request, res: Response): Promise
     const passwordHash = data.passwordHash;
 
     try {
+      // Delete any previous unapproved registrations with the same unique fields to prevent constraint errors
+      await GuardianRegistrationModel.destroy({
+        where: {
+          [Op.or]: [
+            { email: data.email },
+            { phoneNo: data.phoneNo },
+            { nationalId: data.nationalId }
+          ],
+          status: { [Op.ne]: 'approved' } // Never delete approved accounts
+        }
+      });
+
       // Create registration record
       console.log('Attempting to create GuardianRegistration record...');
       const registration = await GuardianRegistrationModel.create({
