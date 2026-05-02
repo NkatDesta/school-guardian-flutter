@@ -155,10 +155,10 @@ export default function DashboardLayout({
     { icon: BookOpen, label: 'Homework', href: '/dashboard/homework', roles: ['teacher', 'homeroom_teacher', 'guardian'] },
     { icon: Users, label: 'Students', href: '/dashboard/students', roles: ['homeroom_teacher'] },
     { icon: Car, label: 'Pickup', href: '/dashboard/pickup', roles: ['guardian', 'teacher', 'homeroom_teacher', 'registrar'] },
-    { icon: Settings, label: 'User Management', href: '/dashboard/users', roles: ['director'] },
+    { icon: Settings, label: 'User Management', href: '/dashboard/users', roles: ['registrar'] },
     { icon: MessageSquare, label: 'Messages', href: '/dashboard/messages', roles: ['homeroom_teacher'] },
     { icon: FileText, label: 'Report Cards', href: '/dashboard/report-cards', roles: ['director', 'homeroom_teacher', 'guardian'] },
-    { icon: ClipboardList, label: 'Audit Logs', href: '/dashboard/audit-logs', roles: ['director'] },
+    { icon: ClipboardList, label: 'Audit Logs', href: '/dashboard/audit-logs', roles: ['registrar'] },
     { icon: User, label: 'Registrations', href: '/dashboard/registrations', roles: ['registrar'] },
   ]
 

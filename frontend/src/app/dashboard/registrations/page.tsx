@@ -88,8 +88,7 @@ export default function RegistrationsPage() {
   const fetchRegistrations = async () => {
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${apiUrl}/api/registration/registrar/pending?status=${statusFilter}`, {
+      const response = await fetch(`/api/registration/registrar/pending?status=${statusFilter}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -108,8 +107,7 @@ export default function RegistrationsPage() {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${apiUrl}/api/registration/registrar/stats`, {
+      const response = await fetch(`/api/registration/registrar/stats`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -129,8 +127,7 @@ export default function RegistrationsPage() {
         return
       }
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${apiUrl}/api/registration/registrar/${registrationId}/approve`, {
+      const response = await fetch(`/api/registration/registrar/${registrationId}/approve`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -164,8 +161,7 @@ export default function RegistrationsPage() {
     setIsSearching(true)
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${apiUrl}/api/registration/registrar/students/search?query=${query}`, {
+      const response = await fetch(`/api/registration/registrar/students/search?query=${query}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       const data = await response.json()
@@ -187,8 +183,7 @@ export default function RegistrationsPage() {
 
     try {
       const token = localStorage.getItem('token')
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      const response = await fetch(`${apiUrl}/api/registration/registrar/${registrationId}/reject`, {
+      const response = await fetch(`/api/registration/registrar/${registrationId}/reject`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,

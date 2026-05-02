@@ -31,7 +31,7 @@ export default function UserDirectoryPage() {
     setLoading(true)
     try {
       const token = localStorage.getItem('token')
-      const url = new URL('http://localhost:3000/api/admin/users/search')
+      const url = new URL('/api/admin/users/search', window.location.origin)
       if (query) url.searchParams.append('query', query)
       if (roleFilter) url.searchParams.append('role', roleFilter)
 
