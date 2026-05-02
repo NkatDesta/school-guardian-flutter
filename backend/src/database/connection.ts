@@ -15,6 +15,10 @@ export const sequelize = new Sequelize({
     connectTimeout: 10000,
     acquireTimeout: 10000,
     timeout: 10000,
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   },
   pool: {
     max: 5,

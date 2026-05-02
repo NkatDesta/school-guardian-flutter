@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { User, Mail, Phone, Lock, CreditCard, Users, Upload, CheckCircle, AlertCircle, ArrowRight, ArrowLeft, Shield } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 
 interface FormData {
   fullName: string
@@ -179,118 +181,82 @@ export default function RegisterPage() {
 
   const renderStep1 = () => (
     <form onSubmit={handleStep1Submit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-          <input
-            type="text"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleInputChange}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your full name"
-            required
-          />
-        </div>
-      </div>
+      <Input
+        label="Full Name *"
+        icon={User}
+        name="fullName"
+        value={formData.fullName}
+        onChange={handleInputChange}
+        placeholder="Enter your full name"
+        required
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-        <div className="relative">
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="your.email@example.com"
-            required
-          />
-        </div>
-      </div>
+      <Input
+        label="Email Address *"
+        icon={Mail}
+        type="email"
+        name="email"
+        value={formData.email}
+        onChange={handleInputChange}
+        placeholder="your.email@example.com"
+        required
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-        <div className="relative">
-          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-          <input
-            type="tel"
-            name="phoneNo"
-            value={formData.phoneNo}
-            onChange={handleInputChange}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="+251 911 234 567"
-            required
-          />
-        </div>
-      </div>
+      <Input
+        label="Phone Number *"
+        icon={Phone}
+        type="tel"
+        name="phoneNo"
+        value={formData.phoneNo}
+        onChange={handleInputChange}
+        placeholder="+251 911 234 567"
+        required
+      />
 
       <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Min 8 characters"
-              minLength={8}
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password *</label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Confirm password"
-              required
-            />
-          </div>
-        </div>
+        <Input
+          label="Password *"
+          icon={Lock}
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleInputChange}
+          placeholder="Min 8 characters"
+          minLength={8}
+          required
+        />
+        <Input
+          label="Confirm Password *"
+          icon={Lock}
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleInputChange}
+          placeholder="Confirm password"
+          required
+        />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">National ID / Kebele ID *</label>
-        <div className="relative">
-          <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-          <input
-            type="text"
-            name="nationalId"
-            value={formData.nationalId}
-            onChange={handleInputChange}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your National ID number"
-            required
-          />
-        </div>
-      </div>
+      <Input
+        label="National ID / Kebele ID *"
+        icon={CreditCard}
+        name="nationalId"
+        value={formData.nationalId}
+        onChange={handleInputChange}
+        placeholder="Enter your National ID number"
+        required
+      />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Child's Full Name *</label>
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-          <input
-            type="text"
-            name="studentName"
-            value={formData.studentName}
-            onChange={handleInputChange}
-            className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter your child's full name"
-            required
-          />
-        </div>
+        <Input
+          label="Child's Full Name *"
+          icon={User}
+          name="studentName"
+          value={formData.studentName}
+          onChange={handleInputChange}
+          placeholder="Enter your child's full name"
+          required
+        />
         <p className="text-xs text-gray-500 mt-1">Please provide the child's legal name for school records</p>
       </div>
 
@@ -300,7 +266,7 @@ export default function RegisterPage() {
           name="relationshipType"
           value={formData.relationshipType}
           onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary outline-none transition-all text-sm"
           required
         >
           <option value="">Select relationship...</option>
@@ -309,22 +275,22 @@ export default function RegisterPage() {
         </select>
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors"
+        className="w-full py-3"
       >
         {loading ? 'Validating...' : (
           <>
-            Continue <ArrowRight className="h-5 w-5" />
+            Continue <ArrowRight className="h-5 w-5 ml-2" />
           </>
         )}
-      </button>
+      </Button>
 
       <div className="text-center">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-blue-600 font-bold hover:underline">
+          <Link href="/auth/login" className="text-brand-primary font-bold hover:underline">
             Sign In
           </Link>
         </p>
@@ -335,47 +301,47 @@ export default function RegisterPage() {
   const renderStep2 = () => (
     <form onSubmit={handleStep2Submit} className="space-y-6">
       <div className="text-center">
-        <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Shield className="h-8 w-8 text-blue-600" />
+        <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Shield className="h-8 w-8 text-brand-primary" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900">Verify Your Phone</h3>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-600 mt-2 text-sm">
           We've sent a 6-digit verification code to<br />
-          <strong>{formData.phoneNo}</strong>
+          <strong className="text-gray-900">{formData.phoneNo}</strong>
         </p>
         {studentName && (
-          <div className="mt-4 p-2 bg-blue-50 text-blue-700 rounded-lg text-sm border border-blue-100 font-medium">
-            Registering for student: <span className="text-blue-900 font-bold">{studentName}</span>
+          <div className="mt-4 p-2 bg-brand-50 text-brand-700 rounded-lg text-sm border border-brand-100 font-medium">
+            Registering for student: <span className="text-brand-900 font-bold">{studentName}</span>
           </div>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Enter OTP *</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 text-center">Enter OTP *</label>
         <input
           type="text"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
-          className="w-full px-3 py-3 text-center text-2xl tracking-widest border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-3 text-center text-2xl tracking-widest border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary outline-none transition-all"
           placeholder="000000"
           maxLength={6}
           required
         />
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={loading || otp.length !== 6}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors disabled:bg-gray-400"
+        className="w-full py-3"
       >
         {loading ? 'Verifying...' : 'Verify OTP'}
-      </button>
+      </Button>
 
       <div className="text-center">
         <button
           type="button"
           onClick={handleResendOTP}
-          className="text-blue-600 hover:underline text-sm"
+          className="text-brand-primary hover:underline text-sm font-medium"
         >
           Didn't receive the code? Resend
         </button>
@@ -384,7 +350,7 @@ export default function RegisterPage() {
       <button
         type="button"
         onClick={() => setStep(1)}
-        className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-gray-800"
+        className="w-full flex items-center justify-center gap-2 text-gray-500 hover:text-gray-700 text-sm transition-colors"
       >
         <ArrowLeft className="h-4 w-4" /> Go Back
       </button>
@@ -394,187 +360,171 @@ export default function RegisterPage() {
   const renderStep3 = () => (
     <form onSubmit={handleStep3Submit} className="space-y-6">
       <div className="text-center">
-        <div className="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Upload className="h-8 w-8 text-green-600" />
+        <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Upload className="h-8 w-8 text-brand-primary" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900">Upload Documents</h3>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-600 mt-2 text-sm">
           Please upload the required documents for verification
         </p>
         {studentName && (
-          <div className="mt-2 text-sm text-blue-700 font-medium italic">
+          <div className="mt-2 text-sm text-brand-700 font-medium italic">
             Student: {studentName}
           </div>
         )}
       </div>
 
       <div className="space-y-4">
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
-          <label className="block cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Upload className="h-5 w-5 text-blue-600" />
+        {[
+          { id: 'certificate', label: 'Birth Certificate or Legal Guardian Certificate', field: 'certificate' },
+          { id: 'idFront', label: 'National ID / Kebele ID - Front Side', field: 'idFront' },
+          { id: 'idBack', label: 'National ID / Kebele ID - Back Side', field: 'idBack' }
+        ].map((doc) => (
+          <div key={doc.id} className="border-2 border-dashed border-gray-200 rounded-xl p-4 hover:border-brand-primary hover:bg-brand-50/30 transition-all cursor-pointer group">
+            <label className="block cursor-pointer">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg transition-colors ${documents[doc.field as keyof Documents] ? 'bg-green-100 text-green-600' : 'bg-brand-100 text-brand-primary group-hover:bg-brand-primary group-hover:text-white'}`}>
+                  <Upload className="h-5 w-5" />
+                </div>
+                <div className="flex-1">
+                  <p className={`font-medium text-sm ${documents[doc.field as keyof Documents] ? 'text-green-700' : 'text-gray-900'}`}>
+                    {documents[doc.field as keyof Documents] ? (documents[doc.field as keyof Documents] as File).name : doc.label}
+                  </p>
+                  <p className="text-xs text-gray-500">PDF, JPG, or PNG (max 5MB)</p>
+                </div>
+                {documents[doc.field as keyof Documents] && <CheckCircle className="h-5 w-5 text-green-600" />}
               </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">
-                  {documents.certificate ? documents.certificate.name : 'Birth Certificate or Legal Guardian Certificate'}
-                </p>
-                <p className="text-sm text-gray-500">PDF, JPG, or PNG (max 5MB)</p>
-              </div>
-              {documents.certificate && <CheckCircle className="h-5 w-5 text-green-600" />}
-            </div>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileChange(e, 'certificate')}
-              className="hidden"
-              required
-            />
-          </label>
-        </div>
-
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
-          <label className="block cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Upload className="h-5 w-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">
-                  {documents.idFront ? documents.idFront.name : 'National ID / Kebele ID - Front Side'}
-                </p>
-                <p className="text-sm text-gray-500">PDF, JPG, or PNG (max 5MB)</p>
-              </div>
-              {documents.idFront && <CheckCircle className="h-5 w-5 text-green-600" />}
-            </div>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileChange(e, 'idFront')}
-              className="hidden"
-              required
-            />
-          </label>
-        </div>
-
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
-          <label className="block cursor-pointer">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Upload className="h-5 w-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">
-                  {documents.idBack ? documents.idBack.name : 'National ID / Kebele ID - Back Side'}
-                </p>
-                <p className="text-sm text-gray-500">PDF, JPG, or PNG (max 5MB)</p>
-              </div>
-              {documents.idBack && <CheckCircle className="h-5 w-5 text-green-600" />}
-            </div>
-            <input
-              type="file"
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={(e) => handleFileChange(e, 'idBack')}
-              className="hidden"
-              required
-            />
-          </label>
-        </div>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => handleFileChange(e, doc.field as keyof Documents)}
+                className="hidden"
+                required
+              />
+            </label>
+          </div>
+        ))}
       </div>
 
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-start gap-2">
-        <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
-        <p className="text-sm text-yellow-800">
-          Documents will be reviewed by the school registrar. Ensure all information is clear and legible.
+      <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4 flex items-start gap-3">
+        <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+        <p className="text-xs text-yellow-800 leading-relaxed">
+          Documents will be reviewed by the school registrar. Ensure all information is clear and legible to avoid delays.
         </p>
       </div>
 
-      <button
+      <Button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+        className="w-full py-3"
       >
         {loading ? 'Submitting...' : 'Submit Registration'}
-      </button>
+      </Button>
     </form>
   )
 
   const renderStep4 = () => (
     <div className="text-center space-y-6">
-      <div className="bg-green-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto">
+      <div className="bg-green-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto shadow-sm">
         <CheckCircle className="h-10 w-10 text-green-600" />
       </div>
 
       <div>
         <h3 className="text-2xl font-bold text-gray-900">Registration Submitted!</h3>
-        <p className="text-gray-600 mt-2">
+        <p className="text-gray-600 mt-2 text-sm">
           Your registration request has been received and is pending review.
         </p>
       </div>
 
-      <div className="bg-gray-50 rounded-lg p-4 text-left">
-        <p className="text-sm text-gray-600 mb-2"><strong>Registration ID:</strong> #{registrationId}</p>
-        <p className="text-sm text-gray-600 mb-2"><strong>Email:</strong> {formData.email}</p>
-        <p className="text-sm text-gray-600 mb-2"><strong>Status:</strong> <span className="text-yellow-600 font-medium">Pending Review</span></p>
-        <p className="text-sm text-gray-600"><strong>Correction Attempts:</strong> 2</p>
+      <div className="bg-gray-50 rounded-xl p-5 text-left border border-gray-100 space-y-3">
+        <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+          <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">Registration ID</span>
+          <span className="text-sm font-bold text-gray-900">#{registrationId}</span>
+        </div>
+        <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+          <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">Email</span>
+          <span className="text-sm text-gray-700">{formData.email}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-xs text-gray-500 font-medium uppercase tracking-wider">Status</span>
+          <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">Pending Review</span>
+        </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
-        <h4 className="font-semibold text-blue-900 mb-2">What happens next?</h4>
-        <ul className="text-sm text-blue-800 space-y-1">
-          <li>1. The registrar will review your documents (1-2 business days)</li>
-          <li>2. You will receive an email notification once approved</li>
-          <li>3. You can then log in to access your child's information</li>
+      <div className="bg-brand-50 border border-brand-100 rounded-xl p-5 text-left">
+        <h4 className="font-bold text-brand-900 mb-3 flex items-center gap-2">
+          <Shield className="h-4 w-4" /> What happens next?
+        </h4>
+        <ul className="text-sm text-brand-800 space-y-2">
+          <li className="flex gap-2 items-start"><span className="w-1.5 h-1.5 bg-brand-primary rounded-full mt-1.5" /> The registrar will review your documents (1-2 business days)</li>
+          <li className="flex gap-2 items-start"><span className="w-1.5 h-1.5 bg-brand-primary rounded-full mt-1.5" /> You will receive an email notification once approved</li>
+          <li className="flex gap-2 items-start"><span className="w-1.5 h-1.5 bg-brand-primary rounded-full mt-1.5" /> You can then log in to access your child's information</li>
         </ul>
       </div>
 
-      <Link
-        href="/auth/login"
-        className="inline-block bg-blue-600 hover:bg-blue-700 text-white py-3 px-8 rounded-lg font-medium transition-colors"
+      <Button
+        onClick={() => router.push('/auth/login')}
+        className="w-full py-4 text-lg"
       >
         Go to Login
-      </Link>
+      </Button>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex justify-center p-4 py-12 md:py-16 overflow-y-auto">
+    <div className="min-h-screen bg-brand-bg flex justify-center p-4 py-12 md:py-16 overflow-y-auto">
       <div className="w-full max-w-lg my-auto">
-        <div className="flex items-center justify-between mb-8">
+        {/* Step Indicators */}
+        <div className="flex items-center justify-between mb-10 px-4">
           {[1, 2, 3, 4].map((s) => (
-            <div key={s} className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-                step >= s ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'
+            <div key={s} className="flex items-center flex-1 last:flex-none">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-500 ${
+                step >= s ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20 scale-110' : 'bg-white text-gray-400 border-2 border-gray-100'
               }`}>
-                {step > s ? <CheckCircle className="h-5 w-5" /> : s}
+                {step > s ? <CheckCircle className="h-6 w-6" /> : s}
               </div>
-              {s < 4 && <div className={`w-12 h-1 mx-2 ${step > s ? 'bg-blue-600' : 'bg-gray-300'}`} />}
+              {s < 4 && (
+                <div className="flex-1 mx-2 h-1 bg-gray-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-brand-primary transition-all duration-500" 
+                    style={{ width: step > s ? '100%' : '0%' }}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Guardian Registration</h2>
-            <p className="text-gray-600 mt-1">
-              {step === 1 && 'Create your guardian account'}
-              {step === 2 && 'Verify your phone number'}
-              {step === 3 && 'Upload required documents'}
-              {step === 4 && 'Registration complete'}
+        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-brand-900/5 p-8 md:p-10 border border-gray-50">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-black text-gray-900 tracking-tight">Guardian Registration</h2>
+            <p className="text-gray-500 mt-2 text-sm font-medium">
+              {step === 1 && 'Create your secure guardian account'}
+              {step === 2 && 'Verify your mobile phone number'}
+              {step === 3 && 'Upload necessary school documents'}
+              {step === 4 && 'Your application is being processed'}
             </p>
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-red-600" />
-              <span className="text-red-800 text-sm">{error}</span>
+            <div className="mb-6 bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-3 animate-shake">
+              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+              <span className="text-red-800 text-sm font-medium">{error}</span>
             </div>
           )}
 
-          {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
-          {step === 3 && renderStep3()}
-          {step === 4 && renderStep4()}
+          <div className="transition-all duration-300">
+            {step === 1 && renderStep1()}
+            {step === 2 && renderStep2()}
+            {step === 3 && renderStep3()}
+            {step === 4 && renderStep4()}
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-gray-400 text-xs font-medium">
+            &copy; 2024 Digital Parent School. All rights reserved.
+          </p>
         </div>
       </div>
     </div>

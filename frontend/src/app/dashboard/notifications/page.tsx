@@ -150,8 +150,8 @@ export default function NotificationsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
       </div>
     )
   }
@@ -163,8 +163,8 @@ export default function NotificationsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-white flex items-center">
-              <Bell className="h-8 w-8 text-blue-400 mr-3" />
+            <h1 className="text-3xl font-black text-white flex items-center tracking-tight">
+              <Bell className="h-8 w-8 text-brand-primary mr-3" />
               Notifications
             </h1>
             <p className="text-gray-300 mt-2">Stay updated with school activities</p>
@@ -174,7 +174,7 @@ export default function NotificationsPage() {
             <div className="flex gap-3">
               <button
                 onClick={() => router.push('/dashboard/notifications/create')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                className="bg-brand-primary hover:bg-brand-primaryHover text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-brand-primary/20"
               >
                 <Plus className="h-5 w-5" />
                 Create Notification
@@ -190,16 +190,16 @@ export default function NotificationsPage() {
             <p className="text-gray-500">You're all caught up! No new announcements.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="px-6 py-4 border-b border-gray-200 bg-blue-50">
-               <h2 className="text-lg font-bold text-gray-800">Active announcements</h2>
+          <div className="bg-white rounded-3xl shadow-xl shadow-brand-900/5 overflow-hidden border border-gray-50">
+            <div className="px-6 py-5 border-b border-gray-100 bg-brand-50/50">
+               <h2 className="text-lg font-black text-brand-900 tracking-tight uppercase text-xs">Active announcements</h2>
             </div>
             <div className="divide-y divide-gray-200">
               {notifications.map((notification, index) => (
                 <div key={notification.id} className="p-6 hover:bg-gray-50 transition-colors relative group">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-[16px] font-bold text-blue-900 mb-2">
+                      <h3 className="text-lg font-bold text-brand-900 mb-1 group-hover:text-brand-primary transition-colors">
                         {index + 1}. {notification.title}
                       </h3>
                       <p className="text-sm font-semibold text-gray-800 mb-2">

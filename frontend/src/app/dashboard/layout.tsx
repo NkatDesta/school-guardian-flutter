@@ -166,8 +166,8 @@ export default function DashboardLayout({
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="flex justify-center items-center h-screen bg-brand-bg">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
       </div>
     )
   }
@@ -198,7 +198,7 @@ export default function DashboardLayout({
           {/* User Info - Top */}
           <div className="border-b border-gray-700 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center">
                 <User className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -221,7 +221,7 @@ export default function DashboardLayout({
                     onClick={() => router.push(item.href)}
                     className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all cursor-pointer w-full text-left
                     ${isActive
-                        ? 'bg-blue-600 text-white shadow-lg'
+                        ? 'bg-brand-primary text-white shadow-lg'
                         : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                       }`}
                   >
@@ -262,18 +262,18 @@ export default function DashboardLayout({
       <div className="w-4 bg-gray-600" />
 
       {/* Right Section - Blue-Black Background (Fixed Width) */}
-      <div className="flex-1 flex flex-col bg-gradient-to-br from-blue-900 via-blue-800 to-black">
+      <div className="flex-1 flex flex-col bg-brand-bg">
         {/* Top Bar - Always Visible */}
-        <header className="bg-blue-950 px-6 py-4 border-b border-blue-700 shadow-sm">
+        <header className="bg-brand-header px-6 py-4 border-b border-brand-800 shadow-sm">
           <div className="flex-1" />
         </header>
 
         {/* Content */}
         <main className="flex-1 p-6 relative">
           {liveAlert && (
-            <div className="absolute top-4 right-4 z-50 bg-white border-l-4 border-blue-500 rounded-lg shadow-xl p-4 flex items-start gap-4 animate-bounce">
-              <div className="bg-blue-100 p-2 rounded-full mt-1">
-                <Bell className="w-5 h-5 text-blue-600" />
+            <div className="absolute top-4 right-4 z-50 bg-white border-l-4 border-brand-primary rounded-lg shadow-xl p-4 flex items-start gap-4 animate-bounce">
+              <div className="bg-brand-100 p-2 rounded-full mt-1">
+                <Bell className="w-5 h-5 text-brand-primary" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-gray-900">{liveAlert.title}</h4>

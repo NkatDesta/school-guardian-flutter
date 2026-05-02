@@ -3,7 +3,7 @@ import { Button } from '../components/ui/Button'
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-brand-bg">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -16,14 +16,14 @@ export default function HomePage() {
           {/* Single Login Button */}
           <div className="max-w-md mx-auto mb-12">
             <Link href="/auth/login">
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 px-8 rounded-xl font-semibold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-xl hover:shadow-2xl transform hover:scale-105">
+              <Button className="w-full py-4 text-lg">
                 Login to Your Account
               </Button>
             </Link>
             
             <div className="mt-4 text-center">
               <span className="text-gray-600">New user?</span>
-              <Link href="/auth/register" className="ml-1 font-medium text-blue-600 hover:text-blue-800">
+              <Link href="/auth/register" className="ml-1 font-bold text-brand-primary hover:underline">
                 Register here
               </Link>
             </div>
@@ -31,8 +31,8 @@ export default function HomePage() {
           
           {/* Features Section */}
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mb-12">
-            <div className="bg-white/80 backdrop-blur p-8 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-              <div className="text-blue-600 mb-6">
+            <div className="bg-white rounded-3xl shadow-xl shadow-brand-900/5 p-10 hover:shadow-2xl transition-all duration-500 border border-gray-50 group">
+              <div className="text-brand-primary mb-8 group-hover:scale-110 transition-transform">
                 <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9 5-9 5" />
@@ -63,9 +63,9 @@ export default function HomePage() {
           
           {/* Key Features */}
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="text-center bg-white/60 backdrop-blur p-6 rounded-xl">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center bg-white/50 p-6 rounded-2xl border border-gray-100/50">
+              <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>

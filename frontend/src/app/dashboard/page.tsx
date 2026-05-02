@@ -173,24 +173,26 @@ export default function GuardianDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto"></div>
+          <p className="mt-4 text-gray-600 font-medium tracking-tight">Loading your dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-bg">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Home className="h-8 w-8 text-blue-600 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Guardian Dashboard</h1>
+              <div className="bg-brand-50 p-2 rounded-lg mr-3">
+                <Home className="h-6 w-6 text-brand-primary" />
+              </div>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Guardian Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -222,15 +224,15 @@ export default function GuardianDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-2xl shadow-sm shadow-brand-900/5 p-6 border border-gray-50">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Bell className="h-8 w-8 text-blue-600" />
+              <div className="flex-shrink-0 bg-brand-50 p-3 rounded-xl">
+                <Bell className="h-6 w-6 text-brand-primary" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Notifications</p>
-                <p className="text-2xl font-semibold text-gray-900">{stats.totalNotifications}</p>
-                <p className="text-xs text-gray-500">{stats.unreadNotifications} unread</p>
+                <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Notifications</p>
+                <p className="text-2xl font-black text-gray-900">{stats.totalNotifications}</p>
+                <p className="text-xs text-brand-600 font-medium">{stats.unreadNotifications} unread</p>
               </div>
             </div>
           </div>
@@ -286,8 +288,8 @@ export default function GuardianDashboard() {
                 {students.map((student) => (
                   <div key={student.studentId} className="border rounded-lg p-4">
                     <div className="flex items-center mb-2">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="h-6 w-6 text-blue-600" />
+                      <div className="w-10 h-10 bg-brand-50 rounded-full flex items-center justify-center">
+                        <User className="h-6 w-6 text-brand-primary" />
                       </div>
                       <div className="ml-3">
                         <p className="font-medium text-gray-900">{student.fullName}</p>
@@ -305,12 +307,14 @@ export default function GuardianDashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link href="/dashboard/notifications" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+          <Link href="/dashboard/notifications" className="bg-white rounded-2xl shadow-sm shadow-brand-900/5 p-6 hover:shadow-md transition-all border border-gray-50 group">
             <div className="flex items-center mb-4">
-              <Bell className="h-8 w-8 text-blue-600" />
-              <h3 className="ml-3 text-lg font-medium text-gray-900">Notifications</h3>
+              <div className="bg-brand-50 p-2 rounded-lg group-hover:bg-brand-primary group-hover:text-white transition-colors">
+                <Bell className="h-6 w-6 text-brand-primary group-hover:text-white" />
+              </div>
+              <h3 className="ml-3 text-lg font-bold text-gray-900">Notifications</h3>
             </div>
-            <p className="text-gray-600">View school updates and alerts</p>
+            <p className="text-gray-500 text-sm">View school updates and alerts</p>
           </Link>
 
           <Link href="/dashboard/homework" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
