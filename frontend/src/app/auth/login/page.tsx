@@ -72,11 +72,11 @@ function LoginContent() {
 
   return (
     <div className="min-h-screen bg-brand-bg flex flex-col font-sans">
-      {/* Top Header Bar */}
-      <header className="w-full bg-brand-header shadow-lg shadow-brand-primary/10">
+      {/* Top Header Bar - Exact Green from Screenshot */}
+      <header className="w-full bg-brand-primary shadow-lg">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/20">
+            <div className="bg-white/10 p-2 rounded-xl border border-white/20">
               <GraduationCap className="text-white w-6 h-6" />
             </div>
             <span className="text-white font-black text-xl tracking-tighter uppercase">
@@ -84,7 +84,7 @@ function LoginContent() {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Leaf className="text-brand-accent/40 w-5 h-5 hidden md:block" />
+            <Leaf className="text-white/40 w-5 h-5 hidden md:block" />
             <button className="text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
               <Menu className="w-6 h-6" />
             </button>
@@ -94,13 +94,9 @@ function LoginContent() {
 
       {/* Main Content Area */}
       <main className="flex-1 flex justify-center p-4 py-12 md:p-8 overflow-y-auto">
-        <div className="w-full max-w-[480px] my-auto animate-fadeIn">
+        <div className="w-full max-w-[480px] my-auto">
           {/* Main Card */}
           <div className="bg-brand-white rounded-[3rem] shadow-2xl shadow-brand-primary/5 p-8 md:p-12 relative overflow-hidden border border-brand-100">
-            {/* Subtle Leaf Accents */}
-            <Leaf className="absolute -top-6 -right-6 w-24 h-24 text-brand-accent/5 rotate-45 pointer-events-none" />
-            <Leaf className="absolute -bottom-10 -left-10 w-32 h-32 text-brand-accent/10 -rotate-12 pointer-events-none" />
-            
             {/* Role Tabs Switcher */}
             <div className="bg-brand-100 p-1.5 rounded-2xl flex mb-10 overflow-x-auto no-scrollbar relative z-10">
               {roles.map((role) => (
@@ -113,7 +109,7 @@ function LoginContent() {
                     setPassword('')
                     setError('')
                   }}
-                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-500 whitespace-nowrap ${
+                  className={`flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 whitespace-nowrap ${
                     activeRole === role 
                     ? 'bg-brand-primary text-white shadow-md' 
                     : 'text-brand-text hover:text-brand-primary'
@@ -144,7 +140,7 @@ function LoginContent() {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-brand-accent group-focus-within:text-brand-primary transition-colors" />
+                    <User className="h-5 w-5 text-brand-primary group-focus-within:text-brand-primary transition-colors" />
                   </div>
                   <input
                     type="email"
@@ -164,7 +160,7 @@ function LoginContent() {
                 </label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-brand-accent group-focus-within:text-brand-primary transition-colors" />
+                    <Lock className="h-5 w-5 text-brand-primary group-focus-within:text-brand-primary transition-colors" />
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -177,7 +173,7 @@ function LoginContent() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-brand-accent hover:text-brand-primary transition-colors"
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-brand-primary hover:text-brand-primary transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
@@ -206,11 +202,11 @@ function LoginContent() {
                 </Link>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit Button - Gradient from Screenshot */}
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary via-brand-primary to-brand-accent hover:from-brand-primaryHover hover:to-brand-primary text-white font-black text-lg shadow-xl shadow-brand-primary/20 transform active:scale-[0.98] transition-all disabled:opacity-50 disabled:active:scale-100"
+                className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent hover:opacity-90 text-white font-black text-lg shadow-xl shadow-brand-primary/20 transform active:scale-[0.98] transition-all disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">

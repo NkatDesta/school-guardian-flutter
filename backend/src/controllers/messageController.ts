@@ -121,7 +121,7 @@ export class MessageController {
 
       // Verify receiver exists and get their role
       const [users] = await sequelize.query(`
-        SELECT user_id, role FROM users WHERE user_id = ? AND is_active = 1
+        SELECT user_id, role FROM users WHERE user_id = ? AND is_active = true
       `, {
         replacements: [receiverId]
       });
@@ -161,11 +161,12 @@ export class MessageController {
       const [result] = await sequelize.query(`
         INSERT INTO messages (sender_id, receiver_id, content, message_type, sent_at, is_read)
         VALUES (?, ?, ?, ?, NOW(), false)
+        RETURNING message_id
       `, {
         replacements: [senderId, receiverId, content, messageType]
       });
 
-      const messageId = (result as any).insertId;
+      const messageId = (result as any)[0].message_id;
 
       console.log('✅ Message created:', { messageId, senderRole, receiverRole: receiver.role });
 

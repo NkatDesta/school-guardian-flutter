@@ -2,7 +2,29 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { UserCheck, Check, X, User, Phone, Mail, FileText, AlertCircle, ExternalLink, Search, Filter, RefreshCw, FileImage, Shield, Clock, UserX, CheckCircle } from 'lucide-react'
+import { 
+  UserCheck, 
+  Check, 
+  X, 
+  User, 
+  Phone, 
+  Mail, 
+  FileText, 
+  AlertCircle, 
+  ExternalLink, 
+  Search, 
+  Filter, 
+  RefreshCw, 
+  FileImage, 
+  Shield, 
+  Clock, 
+  UserX, 
+  CheckCircle,
+  Leaf,
+  ChevronRight,
+  TrendingUp,
+  ShieldCheck
+} from 'lucide-react'
 
 interface RegistrationRequest {
   registrationId: number
@@ -58,16 +80,7 @@ export default function RegistrationsPage() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [isSearching, setIsSearching] = useState(false)
 
-  // Clear error when student is selected
   useEffect(() => {
-    if (selectedStudent) {
-      setError('')
-    }
-  }, [selectedStudent])
-
-  // Clear error on component mount and when authenticated
-  useEffect(() => {
-    setError('')
     fetchRegistrations()
     fetchStats()
   }, [statusFilter])
@@ -111,59 +124,38 @@ export default function RegistrationsPage() {
   const handleApprove = async (registrationId: number) => {
     try {
       const token = localStorage.getItem('token')
-      if (!token) {
-        setError('You must be logged in to approve registrations')
-        return
-      }
-      
-      // Find the registration data to get the student info
-      const registration = requests.find(r => r.registrationId === registrationId)
-      if (!registration) {
-        setError('Registration not found')
-        return
-      }
-
-      // Check if a student has been selected from search
       if (!selectedStudent || !selectedStudent.student_id) {
         setError('Please search and select a student to link with this guardian')
         return
       }
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      console.log('Approving registration:', registrationId, 'Student:', selectedStudent.fullName, 'ID:', selectedStudent.student_id)
-      
       const response = await fetch(`${apiUrl}/api/registration/registrar/${registrationId}/approve`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
-          studentId: selectedStudent.student_id
-        })
+        body: JSON.stringify({ studentId: selectedStudent.student_id })
       })
 
       const data = await response.json()
-      console.log('Approve response:', data)
-      
       if (data.success) {
-        setSuccess('Registration approved successfully! Guardian account activated.')
+        setSuccess('Registration approved successfully!')
         fetchRegistrations()
         fetchStats()
         setShowDetailModal(false)
-        setSelectedStudent(null) // Clear selected student
+        setSelectedStudent(null)
       } else {
         setError(data.error?.message || 'Failed to approve registration')
       }
     } catch (error) {
-      console.error('Error approving registration:', error)
       setError('Network error. Please try again.')
     }
   }
 
   const handleStudentSearch = async (query: string) => {
     setStudentSearch(query)
-    setError('') // Clear any previous errors
     if (query.length < 2) {
       setSearchResults([])
       return
@@ -195,495 +187,381 @@ export default function RegistrationsPage() {
 
     try {
       const token = localStorage.getItem('token')
-      if (!token) {
-        setError('You must be logged in to reject registrations')
-        return
-      }
-      
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-      console.log('Rejecting registration:', registrationId, 'Reason:', rejectionReason)
-      
       const response = await fetch(`${apiUrl}/api/registration/registrar/${registrationId}/reject`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
-          reason: rejectionReason,
-          requestCorrection 
-        })
+        body: JSON.stringify({ reason: rejectionReason, requestCorrection })
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        setError(errorData.error?.message || 'Failed to reject registration')
-        return
-      }
-
-      const data = await response.json()
-      console.log('Reject response:', data)
-      
-      if (data.success) {
-        setSuccess(requestCorrection 
-          ? 'Correction requested. Guardian will be notified.' 
-          : 'Registration rejected successfully.')
+      if (response.ok) {
+        setSuccess(requestCorrection ? 'Correction requested' : 'Registration rejected')
         fetchRegistrations()
         fetchStats()
         setShowDetailModal(false)
         setShowRejectModal(false)
         setRejectionReason('')
-        setRequestCorrection(false)
-      } else {
-        setError(data.error?.message || 'Failed to reject registration')
       }
     } catch (error) {
-      console.error('Reject error:', error)
-      setError('Failed to reject registration: ' + error.message)
+      setError('Failed to reject registration')
     }
   }
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      approved: 'bg-green-100 text-green-800',
-      rejected: 'bg-red-100 text-red-800',
-      correction_required: 'bg-orange-100 text-orange-800',
-      locked: 'bg-gray-100 text-gray-800'
-    }
-    const labels = {
-      pending: 'Pending',
-      approved: 'Approved',
-      rejected: 'Rejected',
-      correction_required: 'Correction Required',
-      locked: 'Locked'
+      pending: 'bg-brand-bg text-brand-secondary border-brand-secondary/20',
+      approved: 'bg-brand-success/10 text-brand-success border-brand-success/20',
+      rejected: 'bg-red-50 text-red-600 border-red-100',
+      correction_required: 'bg-brand-accent/10 text-brand-primary border-brand-accent/20',
+      locked: 'bg-slate-100 text-slate-600 border-slate-200'
     }
     return (
-      <span className={`px-3 py-1 rounded-full text-xs font-medium ${styles[status as keyof typeof styles]}`}>
-        {labels[status as keyof typeof labels]}
+      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${styles[status as keyof typeof styles]}`}>
+        {status.replace('_', ' ')}
       </span>
     )
   }
 
   const filteredRequests = requests.filter(req => 
-    (req.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || false) ||
-    (req.email?.toLowerCase().includes(searchQuery.toLowerCase()) || false) ||
-    (req.nationalId?.includes(searchQuery) || false)
+    req.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    req.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    req.nationalId?.includes(searchQuery)
   )
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="animate-pulse text-brand-primary font-black text-xl uppercase tracking-tighter">
+          Validating Records...
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-brand-bg relative overflow-hidden font-sans">
+      {/* Decorative Leaves */}
+      <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none rotate-45">
+        <Leaf size={240} className="text-brand-accent" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl p-6 lg:p-8 space-y-10">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white flex items-center">
-            <UserCheck className="h-8 w-8 text-blue-400 mr-3" />
-            Guardian Registration Review
-          </h1>
-          <p className="text-gray-300 mt-2">Review and verify guardian registration requests</p>
-        </div>
+        <header className="bg-brand-white rounded-[3rem] p-8 shadow-xl shadow-brand-primary/5 border border-brand-100 flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden relative">
+          <div className="relative z-10">
+            <h1 className="text-4xl font-black text-brand-heading tracking-tight flex items-center gap-3">
+              Registration Review
+            </h1>
+            <p className="text-brand-text mt-2 text-lg font-medium">
+              Verifying credentials for the Digital School ecosystem.
+            </p>
+          </div>
+          <div className="flex gap-3 relative z-10">
+            <button 
+              onClick={() => { fetchRegistrations(); fetchStats(); }}
+              className="p-4 bg-brand-bg text-brand-primary rounded-2xl border border-brand-100 hover:bg-white transition-all shadow-sm"
+            >
+              <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+            </button>
+          </div>
+          <Leaf className="absolute -bottom-8 -right-8 text-brand-accent/10 rotate-12" size={160} />
+        </header>
 
-        {/* Stats Cards */}
+        {/* Stats Grid */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-2xl font-bold text-yellow-400">{stats.totalPending}</div>
-              <div className="text-sm text-gray-400">Pending</div>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-2xl font-bold text-green-400">{stats.totalApproved}</div>
-              <div className="text-sm text-gray-400">Approved</div>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-2xl font-bold text-red-400">{stats.totalRejected}</div>
-              <div className="text-sm text-gray-400">Rejected</div>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-2xl font-bold text-orange-400">{stats.totalCorrectionRequired}</div>
-              <div className="text-sm text-gray-400">Correction</div>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-2xl font-bold text-gray-400">{stats.totalLocked}</div>
-              <div className="text-sm text-gray-400">Locked</div>
-            </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <div className="text-2xl font-bold text-blue-400">{stats.recentRegistrations}</div>
-              <div className="text-sm text-gray-400">Last 7 Days</div>
-            </div>
-          </div>
+          <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { label: 'Pending', value: stats.totalPending, color: 'text-brand-secondary' },
+              { label: 'Approved', value: stats.totalApproved, color: 'text-brand-success' },
+              { label: 'Rejected', value: stats.totalRejected, color: 'text-red-500' },
+              { label: 'Correction', value: stats.totalCorrectionRequired, color: 'text-brand-primary' },
+              { label: 'Locked', value: stats.totalLocked, color: 'text-slate-400' },
+              { label: 'Recent', value: stats.recentRegistrations, color: 'text-brand-accent' }
+            ].map((stat, i) => (
+              <div key={i} className="bg-brand-white p-5 rounded-3xl border border-brand-100 shadow-sm">
+                <p className="text-[10px] font-black uppercase tracking-widest text-brand-text">{stat.label}</p>
+                <h3 className={`text-2xl font-black mt-1 ${stat.color}`}>{stat.value}</h3>
+              </div>
+            ))}
+          </section>
         )}
 
-        {/* Error/Success Messages */}
-        {error && (
-          <div className="mb-6 bg-red-900 bg-opacity-50 border border-red-600 rounded-lg p-4 flex items-center gap-3">
-            <AlertCircle className="h-5 w-5 text-red-500" />
-            <span className="text-red-200">{error}</span>
-            <button onClick={() => {
-              setError('')
-              // Force clear error
-              setTimeout(() => setError(''), 100)
-            }} className="ml-auto text-red-400 hover:text-red-300 font-bold">CLEAR ERROR</button>
-          </div>
-        )}
-
-        {success && (
-          <div className="mb-6 bg-green-900 bg-opacity-50 border border-green-600 rounded-lg p-4 flex items-center gap-3">
-            <Check className="h-5 w-5 text-green-500" />
-            <span className="text-green-200">{success}</span>
-            <button onClick={() => setSuccess('')} className="ml-auto text-green-400 hover:text-green-300">×</button>
-          </div>
-        )}
-
-        {/* Search and Filter */}
-        <div className="mb-6 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+        {/* Search and Filters */}
+        <div className="bg-brand-white p-4 rounded-[2rem] border border-brand-100 shadow-xl shadow-brand-primary/5 flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex-1 relative w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-accent" size={18} />
             <input
               type="text"
-              placeholder="Search by name, email, or national ID..."
+              placeholder="Search database..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-3 pl-12 pr-4 text-brand-heading font-bold placeholder-brand-text/50 outline-none focus:ring-2 focus:ring-brand-primary/10 transition-all"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:ring-2 focus:ring-blue-500"
+            className="w-full md:w-48 bg-brand-bg border border-brand-100 rounded-2xl py-3 px-4 text-brand-heading font-bold outline-none focus:ring-2 focus:ring-brand-primary/10 transition-all"
           >
-            <option value="pending">Pending Review</option>
+            <option value="pending">Review Pending</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
-            <option value="correction_required">Correction Required</option>
-            <option value="locked">Locked</option>
-            <option value="all">All Status</option>
+            <option value="correction_required">Corrections</option>
+            <option value="all">All Records</option>
           </select>
-          <button
-            onClick={() => { fetchRegistrations(); fetchStats(); }}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </button>
         </div>
 
-        {/* Request List */}
-        <div className="bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-700">
-          <table className="min-w-full divide-y divide-gray-700">
-            <thead className="bg-gray-900">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Registration</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Guardian</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Child Info</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700">
-              {filteredRequests.map((req) => (
-                <tr key={req.registrationId} className="hover:bg-gray-750 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-white">#{req.registrationId}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      <div className="bg-blue-900 h-8 w-8 rounded-full flex items-center justify-center text-blue-200 font-bold mr-3">
-                        {req.fullName?.charAt(0) || '?'}
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-white">{req.fullName || 'N/A'}</div>
-                        <div className="text-xs text-black">{req.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-black">{req.studentName || 'N/A'}</div>
-                    <div className="text-xs text-blue-400 capitalize">{req.relationshipType?.replace('_', ' ') || 'N/A'}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    {getStatusBadge(req.status)}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-black">
-                    {new Date(req.createdAt || Date.now()).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => {
-                        setSelectedRequest(req)
-                        setStudentSearch('')
-                        setSearchResults([])
-                        setSelectedStudent(null)
-                        setError('') // Clear error when opening modal
-                        setShowDetailModal(true)
-                      }}
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      Review Detail
-                    </button>
-                  </td>
+        {/* Requests Table */}
+        <div className="bg-brand-white rounded-[3rem] shadow-xl shadow-brand-primary/5 border border-brand-100 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-brand-bg border-b border-brand-100">
+                <tr>
+                  <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-brand-text">Identity</th>
+                  <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-brand-text">Student Link</th>
+                  <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-brand-text">Status</th>
+                  <th className="px-8 py-5 text-left text-[10px] font-black uppercase tracking-widest text-brand-text">Submitted</th>
+                  <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-widest text-brand-text">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-brand-100">
+                {filteredRequests.map((req) => (
+                  <tr key={req.registrationId} className="hover:bg-brand-bg transition-colors group">
+                    <td className="px-8 py-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm border border-brand-100 flex items-center justify-center text-brand-primary font-black">
+                          {req.fullName?.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="text-sm font-black text-brand-heading">{req.fullName}</p>
+                          <p className="text-[10px] text-brand-text font-bold uppercase">{req.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6">
+                      <p className="text-sm font-bold text-brand-heading">{req.studentName}</p>
+                      <p className="text-[10px] text-brand-secondary font-black uppercase italic">{req.relationshipType}</p>
+                    </td>
+                    <td className="px-8 py-6">
+                      {getStatusBadge(req.status)}
+                    </td>
+                    <td className="px-8 py-6 text-xs font-bold text-brand-text">
+                      {new Date(req.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <button
+                        onClick={() => {
+                          setSelectedRequest(req)
+                          setSelectedStudent(null)
+                          setShowDetailModal(true)
+                        }}
+                        className="p-2 bg-brand-bg text-brand-primary rounded-xl border border-brand-100 hover:bg-brand-primary hover:text-white transition-all group-hover:scale-105 shadow-sm"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {filteredRequests.length === 0 && (
-            <div className="py-12 text-center">
-              <UserX className="h-12 w-12 text-gray-600 mx-auto mb-3" />
-              <p className="text-black font-medium">No registrations found</p>
+            <div className="py-20 text-center">
+              <UserX className="mx-auto text-brand-accent/20" size={64} />
+              <p className="mt-4 text-brand-text font-bold uppercase tracking-widest">No matching records found</p>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Detail Modal */}
-        {showDetailModal && selectedRequest && (
-          <div className="fixed inset-0 z-[60] overflow-y-auto flex items-start justify-center pt-10 p-4 bg-black bg-opacity-75">
-            <div className="bg-gray-900 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl border border-gray-700 flex flex-col relative">
-              {/* Modal Header */}
-              <div className="px-6 py-4 bg-gray-800 border-b border-gray-700 flex justify-between items-center">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-blue-400" />
-                  Review Registration Request #{selectedRequest.registrationId}
-                </h3>
-                <button onClick={() => setShowDetailModal(false)} className="text-black hover:text-white">
-                  <X className="h-6 w-6" />
+      {/* Detail Modal */}
+      {showDetailModal && selectedRequest && (
+        <div className="fixed inset-0 z-[60] overflow-y-auto flex items-center justify-center p-4 bg-brand-heading/40 backdrop-blur-sm">
+          <div className="bg-brand-white rounded-[3rem] w-full max-w-5xl max-h-[90vh] overflow-hidden shadow-2xl border border-brand-100 flex flex-col animate-fadeIn">
+            {/* Header */}
+            <div className="px-10 py-6 border-b border-brand-100 flex justify-between items-center bg-brand-bg/50">
+              <h3 className="text-2xl font-black text-brand-heading tracking-tight flex items-center gap-3">
+                <ShieldCheck className="text-brand-primary" />
+                Case Review #{selectedRequest.registrationId}
+              </h3>
+              <button onClick={() => setShowDetailModal(false)} className="p-2 hover:bg-brand-bg rounded-xl transition-colors">
+                <X size={24} className="text-brand-heading" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div className="space-y-8">
+                  <section>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-brand-text mb-4">Guardian Profile</h4>
+                    <div className="bg-brand-bg rounded-[2rem] p-6 border border-brand-100 space-y-4">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-brand-text">Full Name</span>
+                        <span className="text-sm font-black text-brand-heading">{selectedRequest.fullName}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-brand-text">National ID</span>
+                        <span className="text-sm font-black text-brand-heading">{selectedRequest.nationalId}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-bold text-brand-text">Contact</span>
+                        <span className="text-sm font-black text-brand-heading">{selectedRequest.phoneNo}</span>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest text-brand-text mb-4">Database Linking</h4>
+                    <div className="bg-brand-primary/5 rounded-[2rem] p-6 border border-brand-primary/10">
+                      <p className="text-sm font-bold text-brand-heading mb-4">Alleged Dependent: "{selectedRequest.studentName}"</p>
+                      
+                      {selectedRequest.status === 'pending' ? (
+                        <div className="space-y-4">
+                          <div className="relative">
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-primary" size={16} />
+                            <input
+                              type="text"
+                              placeholder="Search student directory..."
+                              value={studentSearch}
+                              onChange={(e) => handleStudentSearch(e.target.value)}
+                              className="w-full bg-white border border-brand-100 rounded-2xl py-3 pl-11 pr-4 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-primary/10"
+                            />
+                          </div>
+
+                          {searchResults.length > 0 && !selectedStudent && (
+                            <div className="bg-white border border-brand-100 rounded-2xl shadow-xl overflow-hidden max-h-40 overflow-y-auto">
+                              {searchResults.map(s => (
+                                <button
+                                  key={s.student_id}
+                                  onClick={() => setSelectedStudent(s)}
+                                  className="w-full text-left px-5 py-3 text-sm text-brand-text hover:bg-brand-bg hover:text-brand-primary transition-colors flex justify-between font-bold"
+                                >
+                                  <span>{s.fullName}</span>
+                                  <span className="text-brand-accent italic">#{s.student_id}</span>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+
+                          {selectedStudent && (
+                            <div className="flex items-center justify-between bg-brand-success/10 border border-brand-success/20 p-4 rounded-2xl animate-fadeIn">
+                              <div className="flex items-center gap-3">
+                                <CheckCircle className="text-brand-success" size={18} />
+                                <span className="text-sm font-black text-brand-heading">Link: {selectedStudent.fullName}</span>
+                              </div>
+                              <button onClick={() => setSelectedStudent(null)} className="text-xs font-black text-brand-primary hover:underline">RESET</button>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-brand-success font-black text-sm">
+                           <ShieldCheck size={18} />
+                           Verified Link ID #{selectedRequest.studentId}
+                        </div>
+                      )}
+                    </div>
+                  </section>
+                </div>
+
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-brand-text mb-4">Credentials & Documents</h4>
+                  <div className="grid grid-cols-1 gap-4">
+                    {['certificateDocumentPath', 'idFrontPath', 'idBackPath'].map((field) => {
+                      const path = selectedRequest[field as keyof RegistrationRequest] as string
+                      if (!path) return null
+                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+                      const fullPath = `${apiUrl}/${path.replace(/\\/g, '/')}`
+                      const label = field.includes('certificate') ? 'Birth Certificate' : field.includes('Front') ? 'ID Front' : 'ID Back'
+                      
+                      return (
+                        <div key={field} className="bg-brand-bg rounded-[2rem] p-4 border border-brand-100 group">
+                          <p className="text-[10px] font-black text-brand-text uppercase mb-3 px-2">{label}</p>
+                          <div className="relative h-48 rounded-2xl overflow-hidden bg-white border border-brand-100">
+                            <img src={fullPath} alt={label} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                            <div className="absolute inset-0 bg-brand-heading/0 group-hover:bg-brand-heading/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                               <button onClick={() => window.open(fullPath, '_blank')} className="bg-white text-brand-primary px-6 py-2 rounded-xl font-black text-xs shadow-xl">OPEN ORIGINAL</button>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="px-10 py-8 bg-brand-bg border-t border-brand-100 flex justify-end gap-4">
+              <button
+                onClick={() => setShowRejectModal(true)}
+                className="px-8 py-4 border-2 border-red-200 text-red-500 rounded-2xl font-black text-xs uppercase hover:bg-red-50 transition-all"
+              >
+                Reject / Request Correction
+              </button>
+              <button
+                onClick={() => handleApprove(selectedRequest.registrationId)}
+                disabled={!selectedStudent && selectedRequest.status === 'pending'}
+                className="px-10 py-4 bg-brand-primary text-white rounded-2xl font-black text-xs uppercase shadow-xl shadow-brand-primary/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50"
+              >
+                Approve & Activate Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Modal */}
+      {showRejectModal && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-brand-heading/40 backdrop-blur-sm">
+          <div className="bg-brand-white rounded-[3rem] w-full max-w-md p-8 border border-brand-100 shadow-2xl animate-fadeIn">
+            <h3 className="text-2xl font-black text-brand-heading mb-6 tracking-tight">Case Disposition</h3>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="text-[10px] font-black uppercase text-brand-text block mb-2">Internal Reason</label>
+                <textarea
+                  value={rejectionReason}
+                  onChange={(e) => setRejectionReason(e.target.value)}
+                  className="w-full bg-brand-bg border border-brand-100 rounded-2xl p-4 text-brand-heading font-bold h-32 outline-none focus:ring-2 focus:ring-brand-primary/10"
+                  placeholder="Describe the discrepancy..."
+                />
+              </div>
+
+              <div className="flex items-start gap-4 p-4 bg-brand-accent/10 rounded-2xl border border-brand-accent/20">
+                <input
+                  type="checkbox"
+                  id="requestCorrection"
+                  checked={requestCorrection}
+                  onChange={(e) => setRequestCorrection(e.target.checked)}
+                  className="mt-1 w-5 h-5 accent-brand-primary"
+                />
+                <label htmlFor="requestCorrection" className="text-xs font-bold text-brand-heading leading-relaxed">
+                  Allow Resubmission: Check this if you want the guardian to fix the issue and try again.
+                </label>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowRejectModal(false)}
+                  className="flex-1 py-4 text-brand-text font-black text-xs uppercase hover:underline"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => handleReject(selectedRequest!.registrationId)}
+                  className="flex-1 py-4 bg-red-600 text-white font-black text-xs uppercase rounded-2xl shadow-lg"
+                >
+                  Confirm Reject
                 </button>
               </div>
-
-              {/* Modal Body */}
-              <div className="p-6 overflow-y-auto flex-1 custom-scrollbar pb-20">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Guardian Info */}
-                  <div className="space-y-6">
-                    <section>
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
-                        <User className="h-4 w-4" /> Guardian Information
-                      </h4>
-                      <div className="bg-gray-850 rounded-xl p-4 border border-gray-800 space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-gray-400 text-sm">Full Name:</span>
-                          <span className="text-black font-bold text-lg">{selectedRequest.fullName || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400 text-sm">Email:</span>
-                          <span className="text-black font-bold">{selectedRequest.email}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400 text-sm">Phone:</span>
-                          <span className="text-black font-bold">{selectedRequest.phoneNo || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400 text-sm">National ID:</span>
-                          <span className="text-black font-bold">{selectedRequest.nationalId || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400 text-sm">Relationship:</span>
-                          <span className="text-black font-bold capitalize">{selectedRequest.relationshipType?.replace('_', ' ') || 'N/A'}</span>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section>
-                      <h4 className="text-sm font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
-                        <Shield className="h-4 w-4" /> Link to Student
-                      </h4>
-                      <div className="bg-blue-900 bg-opacity-20 rounded-xl p-4 border border-blue-800/30">
-                        <p className="text-black mb-2 font-bold italic text-lg">Student/Child entered: "{selectedRequest.studentName || 'N/A'}"</p>
-                        
-                        {selectedRequest.status === 'pending' ? (
-                          <div className="space-y-3">
-                            <label className="block text-xs text-blue-300 font-bold uppercase">Search Database to Link</label>
-                            <div className="relative">
-                              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-400" />
-                              <input
-                                type="text"
-                                placeholder="Start typing child's name..."
-                                value={studentSearch}
-                                onChange={(e) => handleStudentSearch(e.target.value)}
-                                className="w-full bg-blue-950/40 border border-blue-800 rounded-lg pl-10 pr-4 py-2 text-white placeholder-blue-700 text-sm focus:ring-1 focus:ring-blue-500"
-                              />
-                            </div>
-
-                            {/* Search Results */}
-                            {searchResults.length > 0 && !selectedStudent && (
-                              <div className="bg-gray-900 border border-gray-700 rounded-lg overflow-hidden mt-1 shadow-xl">
-                                {searchResults.map(s => (
-                                  <button
-                                    key={s.student_id}
-                                    onClick={() => {
-                              setSelectedStudent(s)
-                              setError('') // Clear error when student is selected
-                            }}
-                                    className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-900 hover:text-white transition-colors flex justify-between"
-                                  >
-                                    <span>{s.fullName}</span>
-                                    <span className="text-gray-500 italic">#{s.student_id}</span>
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-
-                            {selectedStudent && (
-                              <div className="flex items-center justify-between bg-green-900/30 border border-green-800 p-2 rounded-lg mt-2 animate-in fade-in slide-in-from-top-1">
-                                <div className="flex items-center gap-2">
-                                  <CheckCircle className="h-4 w-4 text-green-500" />
-                                  <span className="text-sm text-black">Selected: <strong>{selectedStudent.fullName}</strong></span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <button onClick={() => {
-                              setError('')
-                              // Force clear error by setting to empty string twice
-                              setTimeout(() => setError(''), 100)
-                            }} className="text-xs text-gray-400 hover:text-red-400">Clear Error</button>
-                                  <button onClick={() => setSelectedStudent(null)} className="text-xs text-gray-400 hover:text-red-400">Change</button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 text-green-400">
-                             <Check className="h-4 w-4" />
-                             <span className="text-sm">Linked to Student ID #{selectedRequest.studentId || 'N/A'}</span>
-                          </div>
-                        )}
-                      </div>
-                    </section>
-                  </div>
-
-                  {/* Documents */}
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-400 uppercase mb-3 flex items-center gap-2">
-                      <FileImage className="h-4 w-4" /> Verification Documents
-                    </h4>
-                    <div className="grid grid-cols-1 gap-4">
-                      {['certificate', 'idFront', 'idBack'].map((docType) => {
-                        // Map frontend field names to API field names
-                        const fieldMap = {
-                          certificate: 'certificateDocumentPath',
-                          idFront: 'idFrontPath', 
-                          idBack: 'idBackPath'
-                        }
-                        const fieldName = fieldMap[docType as keyof typeof fieldMap]
-                        const path = selectedRequest[fieldName as keyof RegistrationRequest] as string
-                        
-                        // Skip if path is not available - return fragment with key to avoid React warning
-                        if (!path) return <React.Fragment key={docType}></React.Fragment>
-                        
-                        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-                        const fullPath = `${apiUrl}/${path.replace(/\\/g, '/')}`
-                        const label = docType === 'certificate' ? 'Birth/Registration Certificate' : 
-                                     docType === 'idFront' ? 'National ID Front' : 'National ID Back'
-                        
-                        return (
-                          <div key={docType} className="bg-gray-850 rounded-xl p-3 border border-gray-800">
-                            <p className="text-xs text-gray-500 mb-2 font-medium">{label}</p>
-                            <div className="relative group overflow-hidden rounded-lg bg-gray-900 h-40">
-                              <img src={fullPath} alt={label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center">
-                                <button
-                                  onClick={() => window.open(fullPath, '_blank')}
-                                  className="opacity-0 group-hover:opacity-100 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform scale-95 group-hover:scale-100"
-                                >
-                                  <ExternalLink className="h-4 w-4 inline mr-2" />
-                                  View Full Size
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons at bottom of content */}
-                {selectedRequest.status === 'pending' || selectedRequest.status === 'correction_required' ? (
-                  <div className="mt-8 pt-6 border-t border-gray-700 flex justify-end gap-3">
-                    <button
-                      onClick={() => setShowRejectModal(true)}
-                      className="px-6 py-3 border border-red-600 text-red-500 hover:bg-red-950 rounded-lg font-bold transition-colors flex items-center gap-2"
-                    >
-                      <X className="h-5 w-5" /> Reject / Correct
-                    </button>
-                    <button
-                      onClick={() => handleApprove(selectedRequest.registrationId)}
-                      className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-colors flex items-center gap-2"
-                    >
-                      <CheckCircle className="h-5 w-5" /> Approve & Activate
-                    </button>
-                  </div>
-                ) : (
-                  <div className="mt-8 pt-6 border-t border-gray-700 flex justify-end">
-                    <button
-                      onClick={() => setShowDetailModal(false)}
-                      className="px-8 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-bold transition-colors"
-                    >
-                      Close Review
-                    </button>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
-        )}
-
-        {/* Reject/Correction Modal */}
-        {showRejectModal && selectedRequest && (
-          <div className="fixed inset-0 z-[70] flex items-start justify-center pt-20 p-4 bg-black bg-opacity-75">
-            <div className="bg-gray-900 rounded-2xl w-full max-w-md p-6 border border-gray-700 shadow-2xl">
-              <h3 className="text-xl font-bold text-white mb-4">Rejection Details</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Reason for Rejection *</label>
-                  <textarea
-                    value={rejectionReason}
-                    onChange={(e) => setRejectionReason(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white placeholder-gray-500 h-32 focus:ring-2 focus:ring-blue-500"
-                    placeholder="Explain why the registration was rejected or what need to be corrected..."
-                    required
-                  ></textarea>
-                </div>
-
-                <div className="flex items-start gap-3 p-3 bg-blue-900/20 rounded-lg">
-                  <input
-                    type="checkbox"
-                    id="requestCorrection"
-                    checked={requestCorrection}
-                    onChange={(e) => setRequestCorrection(e.target.checked)}
-                    className="mt-1 h-4 w-4 rounded border-gray-700 bg-gray-800 text-blue-600 focus:ring-blue-500"
-                  />
-                  <label htmlFor="requestCorrection" className="text-sm text-gray-300">
-                    <strong>Allow Correction:</strong> If checked, the guardian will be asked to update their details/documents instead of being fully rejected.
-                  </label>
-                </div>
-
-                <div className="flex gap-3 mt-6">
-                  <button
-                    onClick={() => setShowRejectModal(false)}
-                    className="flex-1 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => handleReject(selectedRequest.registrationId)}
-                    className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors"
-                  >
-                    Confirm Action
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

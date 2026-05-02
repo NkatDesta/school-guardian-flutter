@@ -278,7 +278,7 @@ export default function RegisterPage() {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full py-3"
+        className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black shadow-xl shadow-brand-primary/20"
       >
         {loading ? 'Validating...' : (
           <>
@@ -332,7 +332,7 @@ export default function RegisterPage() {
       <Button
         type="submit"
         disabled={loading || otp.length !== 6}
-        className="w-full py-3"
+        className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black shadow-xl shadow-brand-primary/20"
       >
         {loading ? 'Verifying...' : 'Verify OTP'}
       </Button>
@@ -416,7 +416,7 @@ export default function RegisterPage() {
       <Button
         type="submit"
         disabled={loading}
-        className="w-full py-3"
+        className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black shadow-xl shadow-brand-primary/20"
       >
         {loading ? 'Submitting...' : 'Submit Registration'}
       </Button>
@@ -465,7 +465,7 @@ export default function RegisterPage() {
 
       <Button
         onClick={() => router.push('/auth/login')}
-        className="w-full py-4 text-lg"
+        className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black shadow-xl shadow-brand-primary/20"
       >
         Go to Login
       </Button>
@@ -473,63 +473,80 @@ export default function RegisterPage() {
   )
 
   return (
-    <div className="min-h-screen bg-brand-bg flex justify-center p-4 py-12 md:py-16 overflow-y-auto">
-      <div className="w-full max-w-lg my-auto">
-        {/* Step Indicators */}
-        <div className="flex items-center justify-between mb-10 px-4 relative">
-          <Leaf className="absolute -left-12 -top-8 w-12 h-12 text-brand-accent/20 -rotate-45" />
-          {[1, 2, 3, 4].map((s) => (
-            <div key={s} className="flex items-center flex-1 last:flex-none">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-all duration-500 ${
-                step >= s ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20 scale-110' : 'bg-white text-brand-text border-2 border-brand-100'
-              }`}>
-                {step > s ? <CheckCircle className="h-6 w-6" /> : s}
-              </div>
-              {s < 4 && (
-                <div className="flex-1 mx-2 h-1 bg-brand-100 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-linear-to-r from-brand-primary to-brand-accent transition-all duration-500" 
-                    style={{ width: step > s ? '100%' : '0%' }}
-                  />
-                </div>
-              )}
+    <div className="min-h-screen bg-brand-bg flex flex-col font-sans">
+      {/* Top Header Bar - Consistent Green Header */}
+      <header className="w-full bg-brand-primary shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="bg-white/10 p-2 rounded-xl border border-white/20">
+              <GraduationCap className="text-white w-6 h-6" />
             </div>
-          ))}
+            <span className="text-white font-black text-xl tracking-tighter uppercase">
+              Digital School
+            </span>
+          </div>
+          <Leaf className="text-white/40 w-5 h-5 hidden md:block" />
         </div>
+      </header>
 
-        <div className="bg-brand-white rounded-[3rem] shadow-2xl shadow-brand-primary/5 p-8 md:p-10 border border-brand-100 relative overflow-hidden">
-          <Leaf className="absolute -top-6 -right-6 w-20 h-20 text-brand-accent/5 rotate-90" />
-          <div className="text-center mb-8 relative z-10">
-            <h2 className="text-3xl font-black text-brand-heading tracking-tight uppercase">Registration</h2>
-            <p className="text-brand-text mt-2 text-sm font-bold">
-              {step === 1 && 'Create your secure guardian account'}
-              {step === 2 && 'Verify your mobile phone number'}
-              {step === 3 && 'Upload necessary school documents'}
-              {step === 4 && 'Your application is being processed'}
+      <main className="flex-1 flex justify-center p-4 py-12 md:p-8 overflow-y-auto">
+        <div className="w-full max-w-lg my-auto">
+          {/* Step Indicators */}
+          <div className="flex items-center justify-between mb-10 px-4 relative">
+            <Leaf className="absolute -left-12 -top-8 w-12 h-12 text-brand-accent/20 -rotate-45" />
+            {[1, 2, 3, 4].map((s) => (
+              <div key={s} className="flex items-center flex-1 last:flex-none">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm transition-all duration-500 ${
+                  step >= s ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/20 scale-110' : 'bg-white text-brand-text border-2 border-brand-100'
+                }`}>
+                  {step > s ? <CheckCircle className="h-6 w-6" /> : s}
+                </div>
+                {s < 4 && (
+                  <div className="flex-1 mx-2 h-1 bg-brand-100 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-linear-to-r from-brand-primary to-brand-accent transition-all duration-500" 
+                      style={{ width: step > s ? '100%' : '0%' }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-brand-white rounded-[3rem] shadow-2xl shadow-brand-primary/5 p-8 md:p-10 border border-brand-100 relative overflow-hidden">
+            <Leaf className="absolute -top-6 -right-6 w-20 h-20 text-brand-accent/5 rotate-90" />
+            <div className="text-center mb-8 relative z-10">
+              <h2 className="text-3xl font-black text-brand-heading tracking-tight uppercase">Registration</h2>
+              <p className="text-brand-text mt-2 text-sm font-bold">
+                {step === 1 && 'Create your secure guardian account'}
+                {step === 2 && 'Verify your mobile phone number'}
+                {step === 3 && 'Upload necessary school documents'}
+                {step === 4 && 'Your application is being processed'}
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-6 bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-3 animate-shake">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                <span className="text-red-800 text-sm font-medium">{error}</span>
+              </div>
+            )}
+
+            <div className="transition-all duration-300">
+              {step === 1 && renderStep1()}
+              {step === 2 && renderStep2()}
+              {step === 3 && renderStep3()}
+              {step === 4 && renderStep4()}
+            </div>
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-gray-400 text-xs font-medium">
+              &copy; 2024 Digital School Portal. All rights reserved.
             </p>
           </div>
-
-          {error && (
-            <div className="mb-6 bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-3 animate-shake">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-              <span className="text-red-800 text-sm font-medium">{error}</span>
-            </div>
-          )}
-
-          <div className="transition-all duration-300">
-            {step === 1 && renderStep1()}
-            {step === 2 && renderStep2()}
-            {step === 3 && renderStep3()}
-            {step === 4 && renderStep4()}
-          </div>
         </div>
-
-        <div className="mt-8 text-center">
-          <p className="text-gray-400 text-xs font-medium">
-            &copy; 2024 Digital Parent School. All rights reserved.
-          </p>
-        </div>
-      </div>
+      </main>
     </div>
   )
 }

@@ -2,16 +2,14 @@
 
 @theme {
   /* Nature/Forest Brand Palette */
-  --color-brand-bg: #FAF7F1;
-  --color-brand-white: #FFFFFF;
-  --color-brand-primary: #2E5A33;
-  --color-brand-primaryHover: #1e3b21;
-  --color-brand-secondary: #5A8D63;
-  --color-brand-header: #2E5A33;
-  --color-brand-heading: #333333;
-  --color-brand-text: #666666;
-  --color-brand-accent: #A4C639;
-  --color-brand-success: #33A853;
+  --color-brand-bg: #FAF7F1; /* Antique Cream */
+  --color-brand-white: #FFFFFF; /* Clean White */
+  --color-brand-primary: #2E5A33; /* Forest Green */
+  --color-brand-secondary: #5A8D63; /* Meadow Green */
+  --color-brand-heading: #333333; /* Dark Charcoal */
+  --color-brand-text: #666666; /* Slate Grey */
+  --color-brand-success: #33A853; /* Success Green */
+  --color-brand-accent: #A4C639; /* Muted Lime */
 
   /* Specific Shades */
   --color-brand-50: #f4f7f4;

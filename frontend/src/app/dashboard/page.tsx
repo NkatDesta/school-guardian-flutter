@@ -15,7 +15,10 @@ import {
   AlertCircle,
   Home,
   LogOut,
-  Menu
+  Menu,
+  Leaf,
+  ChevronRight,
+  TrendingUp
 } from 'lucide-react'
 
 interface UserType {
@@ -95,7 +98,6 @@ export default function GuardianDashboard() {
       return
     }
 
-    // Load guardian data
     loadGuardianData(parsed.userId)
   }, [router])
 
@@ -107,44 +109,28 @@ export default function GuardianDashboard() {
         ...(token && { 'Authorization': `Bearer ${token}` })
       }
 
-      // Load students
-      const studentsResponse = await fetch('/api/students/my-children', { headers })
-      if (studentsResponse.ok) {
-        const studentsData = await studentsResponse.json()
-        console.log('Students data:', studentsData)
-        setStudents(studentsData.data?.students || [])
-      } else {
-        console.error('Students API error:', studentsResponse.status)
-      }
+      const [studentsRes, notificationsRes, homeworkRes, pickupRes] = await Promise.all([
+        fetch('/api/students/my-children', { headers }),
+        fetch('/api/notifications', { headers }),
+        fetch('/api/homework', { headers }),
+        fetch('/api/pickup', { headers })
+      ])
 
-      // Load notifications
-      const notificationsResponse = await fetch('/api/notifications', { headers })
-      if (notificationsResponse.ok) {
-        const notificationsData = await notificationsResponse.json()
-        console.log('Notifications data:', notificationsData)
-        setNotifications(notificationsData.data?.notifications || [])
-      } else {
-        console.error('Notifications API error:', notificationsResponse.status)
+      if (studentsRes.ok) {
+        const d = await studentsRes.json()
+        setStudents(d.data?.students || [])
       }
-
-      // Load homework
-      const homeworkResponse = await fetch('/api/homework', { headers })
-      if (homeworkResponse.ok) {
-        const homeworkData = await homeworkResponse.json()
-        console.log('Homework data:', homeworkData)
-        setHomework(homeworkData.data?.homework || [])
-      } else {
-        console.error('Homework API error:', homeworkResponse.status)
+      if (notificationsRes.ok) {
+        const d = await notificationsRes.json()
+        setNotifications(d.data?.notifications || [])
       }
-
-      // Load pickup requests
-      const pickupResponse = await fetch('/api/pickup', { headers })
-      if (pickupResponse.ok) {
-        const pickupData = await pickupResponse.json()
-        console.log('Pickup data:', pickupData)
-        setPickupRequests(pickupData.data?.pickupRequests || [])
-      } else {
-        console.error('Pickup API error:', pickupResponse.status)
+      if (homeworkRes.ok) {
+        const d = await homeworkRes.json()
+        setHomework(d.data?.homework || [])
+      }
+      if (pickupRes.ok) {
+        const d = await pickupRes.json()
+        setPickupRequests(d.data?.pickupRequests || [])
       }
 
     } catch (error) {
@@ -155,193 +141,162 @@ export default function GuardianDashboard() {
   }
 
   useEffect(() => {
-    if (notifications.length > 0 || homework.length > 0 || pickupRequests.length > 0) {
-      setStats({
-        totalNotifications: notifications.length,
-        unreadNotifications: notifications.filter(n => !n.isRead).length,
-        pendingHomework: homework.filter(h => h.isActive).length,
-        pendingPickups: pickupRequests.filter(p => p.status === 'pending').length
-      })
-    }
+    setStats({
+      totalNotifications: notifications.length,
+      unreadNotifications: notifications.filter(n => !n.isRead).length,
+      pendingHomework: homework.filter(h => h.isActive).length,
+      pendingPickups: pickupRequests.filter(p => p.status === 'pending').length
+    })
   }, [notifications, homework, pickupRequests])
-
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    router.push('/auth/login')
-  }
 
   if (loading) {
     return (
       <div className="min-h-screen bg-brand-bg flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-primary mx-auto"></div>
-          <p className="mt-4 text-gray-600 font-medium tracking-tight">Loading your dashboard...</p>
+        <div className="animate-pulse text-brand-primary font-black text-xl uppercase tracking-tighter">
+          Loading Digital School...
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-brand-bg">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="bg-brand-50 p-2 rounded-lg mr-3">
-                <Home className="h-6 w-6 text-brand-primary" />
-              </div>
-              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Guardian Dashboard</h1>
+    <div className="min-h-screen bg-brand-bg relative overflow-hidden font-sans">
+      <div className="relative mx-auto max-w-7xl p-6 lg:p-8 space-y-10">
+        {/* Profile Header - Simplified */}
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-brand-white p-8 rounded-3xl shadow-xl shadow-brand-primary/5 border border-brand-100">
+          <div className="flex items-center gap-6">
+            <div className="w-20 h-20 bg-brand-bg rounded-3xl flex items-center justify-center shadow-inner border border-brand-100 group">
+              <User size={40} className="text-brand-primary group-hover:scale-110 transition-transform" />
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <User className="h-5 w-5 text-gray-400" />
-                <span className="text-sm font-medium text-gray-700">{user?.fullName}</span>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 text-gray-500 hover:text-gray-700"
-              >
-                <LogOut className="h-5 w-5" />
-                <span>Logout</span>
-              </button>
+            <div>
+              <h1 className="text-3xl font-black text-brand-heading tracking-tight">Welcome, {user?.fullName?.split(' ')[0]}!</h1>
+              <p className="text-brand-text font-medium mt-1">Guardian of {students.map(s => s.fullName).join(' & ')}</p>
             </div>
           </div>
-        </div>
-      </header>
+          <div className="flex gap-3">
+             <Link href="/dashboard/pickup" className="px-6 py-3 bg-brand-primary text-white rounded-2xl font-bold shadow-lg shadow-brand-primary/20 hover:scale-105 active:scale-95 transition-all">
+                Request Pickup
+             </Link>
+          </div>
+        </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Welcome back, {user?.fullName}!
-          </h2>
-          <p className="text-gray-600">
-            Here's an overview of your children's school activities and updates.
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-sm shadow-brand-900/5 p-6 border border-gray-50">
-            <div className="flex items-center">
-              <div className="flex-shrink-0 bg-brand-50 p-3 rounded-xl">
-                <Bell className="h-6 w-6 text-brand-primary" />
+        {/* Stats Section - Standard Corners */}
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { label: 'Unread Alerts', value: stats.unreadNotifications, icon: Bell, color: 'text-brand-primary' },
+            { label: 'Homework Due', value: stats.pendingHomework, icon: BookOpen, color: 'text-brand-secondary' },
+            { label: 'Active Students', value: students.length, icon: TrendingUp, color: 'text-brand-accent' },
+            { label: 'Pickup Status', value: stats.pendingPickups, icon: Car, color: 'text-brand-success' }
+          ].map((stat, i) => (
+            <div key={i} className="bg-brand-white p-6 rounded-3xl shadow-sm border border-brand-100 hover:shadow-md transition-all group overflow-hidden relative">
+              <div className="flex items-center justify-between relative z-10">
+                <div className={`p-3 rounded-2xl bg-brand-bg ${stat.color}`}>
+                  <stat.icon size={24} />
+                </div>
+                {stat.value > 0 && (
+                   <span className="bg-brand-bg px-3 py-1 rounded-full text-xs font-black uppercase text-brand-primary">Active</span>
+                )}
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Notifications</p>
-                <p className="text-2xl font-black text-gray-900">{stats.totalNotifications}</p>
-                <p className="text-xs text-brand-600 font-medium">{stats.unreadNotifications} unread</p>
+              <div className="mt-4 relative z-10">
+                <p className="text-brand-text font-bold text-xs uppercase tracking-widest">{stat.label}</p>
+                <h3 className="text-3xl font-black text-brand-heading mt-1">{stat.value}</h3>
               </div>
+              <Leaf size={80} className="absolute -bottom-4 -right-4 text-brand-accent/5 -rotate-12" />
             </div>
-          </div>
+          ))}
+        </section>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <BookOpen className="h-8 w-8 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Homework</p>
-                <p className="text-2xl font-semibold text-gray-900">{stats.pendingHomework}</p>
-                <p className="text-xs text-gray-500">Active assignments</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Car className="h-8 w-8 text-purple-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Pickup Requests</p>
-                <p className="text-2xl font-semibold text-gray-900">{stats.pendingPickups}</p>
-                <p className="text-xs text-gray-500">Pending requests</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <User className="h-8 w-8 text-orange-600" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Your Children</p>
-                <p className="text-2xl font-semibold text-gray-900">{students.length}</p>
-                <p className="text-xs text-gray-500">Active students</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Your Children Section */}
-        <div className="bg-white rounded-lg shadow mb-8">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Your Children</h3>
-          </div>
-          <div className="p-6">
-            {students.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {students.map((student) => (
-                  <div key={student.studentId} className="border rounded-lg p-4">
-                    <div className="flex items-center mb-2">
-                      <div className="w-10 h-10 bg-brand-50 rounded-full flex items-center justify-center">
-                        <User className="h-6 w-6 text-brand-primary" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          {/* Main Feed */}
+          <div className="lg:col-span-2 space-y-8">
+             {/* Student Cards */}
+             <div className="bg-brand-white rounded-3xl shadow-xl shadow-brand-primary/5 border border-brand-100 p-8">
+               <h3 className="text-2xl font-black text-brand-heading mb-6 flex items-center gap-3">
+                 <CheckCircle className="text-brand-success" />
+                 Active Student Monitoring
+               </h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {students.map((student, idx) => (
+                    <div key={idx} className="bg-brand-bg p-6 rounded-2xl border border-brand-100 hover:border-brand-primary/20 transition-colors relative overflow-hidden group">
+                      <div className="flex items-center gap-4 relative z-10">
+                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+                           <User size={24} className="text-brand-secondary" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-brand-heading">{student.fullName}</h4>
+                          <p className="text-xs text-brand-text font-semibold uppercase">{student.className}</p>
+                        </div>
                       </div>
-                      <div className="ml-3">
-                        <p className="font-medium text-gray-900">{student.fullName}</p>
-                        <p className="text-sm text-gray-500">{student.grade} - {student.className}</p>
+                      <div className="mt-6 flex items-center justify-between relative z-10">
+                        <div className="text-xs font-bold text-brand-success bg-brand-success/10 px-3 py-1 rounded-full">PRESENT TODAY</div>
+                        <Link href={`/dashboard/report-cards?student=${student.studentId}`} className="text-brand-primary hover:underline text-xs font-black uppercase flex items-center gap-1">
+                          Reports <ChevronRight size={14} />
+                        </Link>
                       </div>
+                      <Leaf className="absolute top-2 right-2 text-brand-accent/10 opacity-0 group-hover:opacity-100 transition-opacity" size={40} />
+                    </div>
+                  ))}
+               </div>
+             </div>
+
+             {/* Recent Homework */}
+             <div className="bg-brand-white rounded-3xl shadow-xl shadow-brand-primary/5 border border-brand-100 p-8">
+               <div className="flex items-center justify-between mb-6">
+                 <h3 className="text-2xl font-black text-brand-heading flex items-center gap-3">
+                   <BookOpen className="text-brand-primary" />
+                   Homework Tracking
+                 </h3>
+                 <Link href="/dashboard/homework" className="text-brand-primary font-black text-xs uppercase hover:underline">View All</Link>
+               </div>
+               <div className="space-y-4">
+                  {homework.slice(0, 3).map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-5 bg-brand-bg rounded-2xl border border-brand-100 group hover:bg-white transition-all">
+                      <div className="flex items-center gap-4">
+                         <div className="p-3 bg-white rounded-xl shadow-sm text-brand-primary">
+                            <FileText size={20} />
+                         </div>
+                         <div>
+                            <h4 className="font-bold text-brand-heading text-sm">{item.title}</h4>
+                            <p className="text-xs text-brand-text">{item.subject} • Due {item.dueDate}</p>
+                         </div>
+                      </div>
+                      <div className="h-2 w-24 bg-brand-100 rounded-full overflow-hidden hidden md:block">
+                         <div className="h-full bg-linear-to-r from-brand-primary to-brand-accent" style={{ width: '70%' }} />
+                      </div>
+                    </div>
+                  ))}
+               </div>
+             </div>
+          </div>
+
+          {/* Activity/Notification Sidebar */}
+          <div className="bg-brand-white rounded-3xl shadow-xl shadow-brand-primary/5 border border-brand-100 flex flex-col p-8">
+             <h3 className="text-2xl font-black text-brand-heading mb-8 flex items-center gap-3">
+                <Bell className="text-brand-primary" />
+                Live Feed
+             </h3>
+             <div className="flex-1 space-y-8 overflow-y-auto no-scrollbar">
+                {notifications.slice(0, 5).map((notif, idx) => (
+                  <div key={idx} className="relative pl-8 before:absolute before:left-0 before:top-2 before:bottom-0 before:w-px before:bg-brand-bg last:before:hidden">
+                    <div className={`absolute left-[-4px] top-1.5 w-2 h-2 rounded-full ring-4 ring-brand-white ${notif.isRead ? 'bg-brand-accent' : 'bg-brand-primary animate-pulse'}`} />
+                    <div className="space-y-2">
+                       <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-brand-text uppercase tracking-widest">{notif.type}</span>
+                          <span className="text-[9px] text-slate-400 font-bold uppercase">{new Date(notif.createdAt).toLocaleDateString()}</span>
+                       </div>
+                       <p className="text-sm font-medium text-brand-text leading-relaxed">
+                          {notif.message}
+                       </p>
                     </div>
                   </div>
                 ))}
-              </div>
-            ) : (
-              <p className="text-gray-500">No children assigned to your account yet.</p>
-            )}
+             </div>
+             <button className="mt-8 w-full py-4 border-2 border-brand-secondary text-brand-secondary font-black text-xs uppercase rounded-2xl hover:bg-brand-secondary hover:text-white transition-all">
+                VIEW ALL ANNOUNCEMENTS
+             </button>
           </div>
         </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link href="/dashboard/notifications" className="bg-white rounded-2xl shadow-sm shadow-brand-900/5 p-6 hover:shadow-md transition-all border border-gray-50 group">
-            <div className="flex items-center mb-4">
-              <div className="bg-brand-50 p-2 rounded-lg group-hover:bg-brand-primary group-hover:text-white transition-colors">
-                <Bell className="h-6 w-6 text-brand-primary group-hover:text-white" />
-              </div>
-              <h3 className="ml-3 text-lg font-bold text-gray-900">Notifications</h3>
-            </div>
-            <p className="text-gray-500 text-sm">View school updates and alerts</p>
-          </Link>
-
-          <Link href="/dashboard/homework" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <BookOpen className="h-8 w-8 text-green-600" />
-              <h3 className="ml-3 text-lg font-medium text-gray-900">Homework</h3>
-            </div>
-            <p className="text-gray-600">Track assignments and deadlines</p>
-          </Link>
-
-          <Link href="/dashboard/pickup" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <Car className="h-8 w-8 text-purple-600" />
-              <h3 className="ml-3 text-lg font-medium text-gray-900">Pickup</h3>
-            </div>
-            <p className="text-gray-600">Manage pickup requests</p>
-          </Link>
-
-          <Link href="/dashboard/report-cards" className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
-            <div className="flex items-center mb-4">
-              <FileText className="h-8 w-8 text-orange-600" />
-              <h3 className="ml-3 text-lg font-medium text-gray-900">Report Cards</h3>
-            </div>
-            <p className="text-gray-600">View academic progress</p>
-          </Link>
-        </div>
-      </main>
+      </div>
     </div>
   )
 }

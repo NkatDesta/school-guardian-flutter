@@ -61,7 +61,8 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch classes')
-    return response.json()
+    const result = await response.json()
+    return result.data?.classes || result.data || result || []
   },
 
   // Module 1: Get students in class
@@ -72,7 +73,8 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch students')
-    return response.json()
+    const result = await response.json()
+    return result.data?.students || result.data || result || []
   },
 
   // Module 2: Create homework
@@ -91,7 +93,8 @@ const api = {
       body: JSON.stringify(data)
     })
     if (!response.ok) throw new Error('Failed to create homework')
-    return response.json()
+    const result = await response.json()
+    return result.data?.homework || result.data || result
   },
 
   // Module 3: Get homework list
@@ -103,7 +106,8 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch homework')
-    return response.json()
+    const result = await response.json()
+    return result.data?.homework || result.data || result || []
   },
 
   // Module 4: Get homework details
@@ -114,7 +118,8 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch homework details')
-    return response.json()
+    const result = await response.json()
+    return result.data?.homework || result.data || result
   },
 
   // Module 4: Get view tracking
@@ -125,7 +130,8 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch view tracking')
-    return response.json()
+    const result = await response.json()
+    return result.data?.views || result.data || result || []
   },
 
   // Module 4: Get guardian feedback
@@ -136,7 +142,8 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch guardian feedback')
-    return response.json()
+    const result = await response.json()
+    return result.data?.feedback || result.data || result || []
   },
 
   // Module 5: Get pickup requests (read-only)
@@ -147,8 +154,9 @@ const api = {
       }
     })
     if (!response.ok) throw new Error('Failed to fetch pickup requests')
-    return response.json()
-  }
+    const result = await response.json()
+    return result.data?.pickupRequests || result.data || result || []
+  },
 }
 
 // React Query hooks

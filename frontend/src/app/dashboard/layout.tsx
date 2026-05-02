@@ -17,7 +17,8 @@ import {
   FileText,
   Settings,
   ClipboardList,
-  Car
+  Car,
+  Leaf
 } from 'lucide-react'
 
 interface UserData {
@@ -88,7 +89,6 @@ export default function DashboardLayout({
             } else {
               const lastIdStr = localStorage.getItem(`lastReadNotifId_${user.userId}`)
               const lastId = lastIdStr ? parseInt(lastIdStr) : 0
-              // Calculate unread items strictly greater than the last viewed ID
               const count = notifs.filter((n: any) => (n.notificationId || n.id || 0) > lastId).length
               setUnreadNotifCount(count)
             }
@@ -132,8 +132,6 @@ export default function DashboardLayout({
     }
 
     checkUnread()
-    
-    // Re-check periodically and on focus
     const interval = setInterval(checkUnread, 60000)
     window.addEventListener('focus', checkUnread)
     
@@ -164,126 +162,118 @@ export default function DashboardLayout({
     { icon: User, label: 'Registrations', href: '/dashboard/registrations', roles: ['registrar'] },
   ]
 
-  if (!user) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-brand-bg">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
-      </div>
-    )
-  }
-
-  const filteredMenuItems = menuItems.filter(item =>
-    item.roles.includes(user.role)
-  )
+  const filteredMenuItems = user 
+    ? menuItems.filter(item => item.roles.includes(user.role))
+    : []
 
   return (
-    <div className="flex h-screen">
-      
-      {/* Left Section - Fixed Width with Gray Background */}
-      <div className="relative flex-shrink-0 w-16">
-        {/* Top Bar - Always Visible */}
-        <div className="bg-gray-900 border-b border-gray-700 px-4 py-3">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 rounded-lg hover:bg-gray-700 text-white"
-          >
-            {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+    <div className="flex h-screen bg-brand-bg font-sans">
+      {/* Fixed Mini Sidebar / Trigger - Match Green Header */}
+      <div className="w-20 bg-brand-primary flex flex-col items-center py-6 shadow-2xl z-50">
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-3 bg-white/10 rounded-2xl text-white hover:bg-white/20 transition-all border border-white/20 shadow-lg"
+        >
+          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+        <div className="mt-8 flex flex-col items-center gap-6">
+           <Leaf className="text-white animate-pulse" size={32} />
         </div>
       </div>
 
-      {/* Collapsible Sidebar - Overlay Position */}
+      {/* Main Collapsible Sidebar Overlay */}
       {sidebarOpen && (
-        <div className="fixed top-0 left-0 z-50 w-64 h-full bg-gray-800 border-r border-gray-700">
-          {/* User Info - Top */}
-          <div className="border-b border-gray-700 p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
+        <aside className="fixed inset-y-0 left-20 z-40 w-72 bg-brand-white shadow-[20px_0_60px_-15px_rgba(0,0,0,0.1)] border-r border-brand-100 transition-transform duration-300 ease-in-out">
+          <div className="h-full flex flex-col p-6">
+            {/* User Profile Summary */}
+            <div className="flex items-center gap-4 mb-10 p-4 bg-brand-bg rounded-3xl border border-brand-100 shadow-inner">
+              <div className="w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center shadow-lg text-white">
+                <User size={28} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{user?.fullName}</p>
-                <p className="text-xs text-gray-400 capitalize truncate">{user?.role?.replace('_', ' ')}</p>
+                <p className="font-bold text-brand-heading truncate text-lg">{user?.fullName}</p>
+                <p className="text-sm text-brand-primary/80 font-semibold uppercase tracking-wider">{user?.role?.replace('_', ' ')}</p>
               </div>
             </div>
-          </div>
 
-          {/* Menu */}
-          <nav className="px-4 py-4">
-            <div className="space-y-1">
-              {filteredMenuItems.filter(item => !(item.label === 'Events' && user.role === 'registrar') && !(item.label === 'Students' && user.role === 'registrar') && !(item.label === 'User Management' && user.role === 'registrar')).map((item) => {
+            {/* Navigation Menu */}
+            <nav className="flex-1 space-y-2 overflow-y-auto no-scrollbar">
+              {filteredMenuItems.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
-
                 return (
                   <button
                     key={item.href}
-                    onClick={() => router.push(item.href)}
-                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm transition-all cursor-pointer w-full text-left
-                    ${isActive
-                        ? 'bg-brand-primary text-white shadow-lg'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    onClick={() => {
+                      router.push(item.href)
+                      setSidebarOpen(false)
+                    }}
+                    className={`group w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-200
+                      ${isActive 
+                        ? 'bg-brand-primary text-white shadow-xl scale-105' 
+                        : 'text-brand-text hover:bg-brand-bg hover:text-brand-primary'
                       }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-5 h-5 flex-shrink-0" />
-                      <span className="font-medium">{item.label}</span>
+                    <div className="flex items-center gap-4">
+                      <Icon size={22} className={isActive ? 'text-white' : 'group-hover:scale-110 transition-transform'} />
+                      <span className="font-bold text-base">{item.label}</span>
                     </div>
-                    {item.label === 'Notifications' && unreadNotifCount > 0 && (
-                      <span className="text-xs font-black px-2 py-0.5 rounded-full shadow-md ml-auto" style={{ backgroundColor: '#dc2626', color: '#ffffff' }}>
-                        {unreadNotifCount}
-                      </span>
-                    )}
-                    {item.label === 'Events' && unreadEventCount > 0 && (
-                      <span className="text-xs font-black px-2 py-0.5 rounded-full shadow-md ml-auto" style={{ backgroundColor: '#dc2626', color: '#ffffff' }}>
-                        {unreadEventCount}
+                    {(item.label === 'Notifications' ? unreadNotifCount : (item.label === 'Events' ? unreadEventCount : 0)) > 0 && (
+                      <span className={`${isActive ? 'bg-white text-brand-primary' : 'bg-brand-primary text-white'} text-[10px] font-black px-2 py-0.5 rounded-full ring-2 ring-brand-white`}>
+                        {item.label === 'Notifications' ? unreadNotifCount : unreadEventCount}
                       </span>
                     )}
                   </button>
                 )
               })}
-            </div>
-          </nav>
+            </nav>
 
-          {/* Logout Button - Bottom */}
-          <div className="p-4">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-900 hover:text-white rounded-lg transition-colors"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Gap Between Sections */}
-      <div className="w-4 bg-gray-600" />
-
-      {/* Right Section - Blue-Black Background (Fixed Width) */}
-      <div className="flex-1 flex flex-col bg-brand-bg">
-        {/* Top Bar - Always Visible */}
-        <header className="bg-brand-header px-6 py-4 border-b border-brand-800 shadow-sm">
-          <div className="flex-1" />
-        </header>
-
-        {/* Content */}
-        <main className="flex-1 p-6 relative">
-          {liveAlert && (
-            <div className="absolute top-4 right-4 z-50 bg-white border-l-4 border-brand-primary rounded-lg shadow-xl p-4 flex items-start gap-4 animate-bounce">
-              <div className="bg-brand-100 p-2 rounded-full mt-1">
-                <Bell className="w-5 h-5 text-brand-primary" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-gray-900">{liveAlert.title}</h4>
-                <p className="text-xs text-gray-600 mt-1">{liveAlert.message}</p>
-              </div>
-              <button onClick={() => setLiveAlert(null)} className="text-gray-400 hover:text-gray-600 ml-2">
-                <X className="w-4 h-4" />
+            {/* Logout Section */}
+            <div className="mt-6 pt-6 border-t border-brand-100">
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center gap-3 py-4 text-red-500 font-bold hover:bg-red-50 rounded-2xl transition-all"
+              >
+                <LogOut size={20} />
+                Sign Out
               </button>
             </div>
-          )}
+          </div>
+        </aside>
+      )}
+
+      {/* Main Viewport */}
+      <div className="flex-1 flex flex-col relative overflow-hidden">
+        {/* Subtle Brand Background Pattern */}
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-brand-primary/5 rounded-full blur-[100px] pointer-events-none" />
+
+        {/* Global Alert Overlay */}
+        {liveAlert && (
+          <div className="fixed top-8 right-8 z-[60] max-w-sm animate-in fade-in slide-in-from-top-4 duration-500">
+            <div className="bg-white rounded-3xl shadow-2xl border-2 border-brand-primary p-6 flex items-start gap-5">
+              <div className="bg-brand-bg p-3 rounded-2xl shadow-inner">
+                <Bell className="text-brand-primary" size={24} />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-black text-brand-heading text-base leading-tight">{liveAlert.title}</h4>
+                <p className="text-brand-text text-sm mt-1 leading-relaxed">{liveAlert.message}</p>
+                <button 
+                  onClick={() => router.push('/dashboard/notifications')}
+                  className="mt-3 text-xs font-bold text-brand-primary hover:underline uppercase tracking-tighter"
+                >
+                  View details
+                </button>
+              </div>
+              <button onClick={() => setLiveAlert(null)} className="text-brand-text/40 hover:text-brand-heading">
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Dynamic Content */}
+        <main className="flex-1 p-6 lg:p-8 overflow-y-auto no-scrollbar relative z-10">
           {children}
         </main>
       </div>

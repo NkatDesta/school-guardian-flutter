@@ -80,27 +80,24 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen bg-brand-bg flex flex-col font-sans">
-      {/* Top Header Bar */}
-      <header className="w-full bg-brand-header shadow-lg shadow-brand-primary/10">
+      {/* Top Header Bar - Consistent Green Header */}
+      <header className="w-full bg-brand-primary shadow-lg">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="bg-white/10 p-2 rounded-xl backdrop-blur-md border border-white/20">
+            <div className="bg-white/10 p-2 rounded-xl border border-white/20">
               <GraduationCap className="text-white w-6 h-6" />
             </div>
             <span className="text-white font-black text-xl tracking-tighter uppercase">
               Digital School
             </span>
           </div>
-          <Leaf className="text-brand-accent/40 w-5 h-5 hidden md:block" />
+          <Leaf className="text-white/40 w-5 h-5 hidden md:block" />
         </div>
       </header>
 
       <main className="flex-1 flex justify-center p-4 py-12 md:p-8 overflow-y-auto">
         <div className="w-full max-w-[480px] my-auto animate-fadeIn">
           <div className="bg-brand-white rounded-[3rem] shadow-2xl shadow-brand-primary/5 p-8 md:p-12 relative overflow-hidden border border-brand-100">
-            <Leaf className="absolute -top-6 -right-6 w-24 h-24 text-brand-accent/5 rotate-45 pointer-events-none" />
-            <Leaf className="absolute -bottom-10 -left-10 w-32 h-32 text-brand-accent/10 -rotate-12 pointer-events-none" />
-
             <div className="text-center mb-8 relative z-10">
               <h1 className="text-3xl font-black text-brand-heading mb-2 tracking-tight uppercase">
                 {step === 1 ? 'Forgot Password' : step === 2 ? 'Reset Password' : 'Success'}
@@ -128,12 +125,13 @@ export default function ForgotPasswordPage() {
                   value={email}
                   onChange={(e: any) => setEmail(e.target.value)}
                   placeholder="example@school.com"
+                  className="bg-brand-bg border-brand-100 rounded-2xl"
                   required
                 />
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary via-brand-primary to-brand-accent text-white font-black text-lg shadow-xl shadow-brand-primary/20 transform active:scale-[0.98] transition-all"
+                  className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black text-lg shadow-xl shadow-brand-primary/20 transform active:scale-[0.98] transition-all"
                 >
                   {loading ? 'Processing...' : 'Send Reset Token'}
                 </Button>
@@ -147,7 +145,7 @@ export default function ForgotPasswordPage() {
 
             {step === 2 && (
               <form onSubmit={handleResetPassword} className="space-y-6 relative z-10">
-                <div className="p-4 bg-brand-50 border border-brand-100 rounded-2xl text-brand-primary text-sm font-bold mb-4">
+                <div className="p-4 bg-brand-bg border border-brand-100 rounded-2xl text-brand-primary text-sm font-bold mb-4">
                   Check your logs or console for the reset token (Demo Mode).
                 </div>
                 <Input
@@ -157,6 +155,7 @@ export default function ForgotPasswordPage() {
                   value={token}
                   onChange={(e: any) => setToken(e.target.value)}
                   placeholder="Enter 6-digit token"
+                  className="bg-brand-bg border-brand-100 rounded-2xl"
                   required
                 />
                 <Input
@@ -166,6 +165,7 @@ export default function ForgotPasswordPage() {
                   value={newPassword}
                   onChange={(e: any) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
+                  className="bg-brand-bg border-brand-100 rounded-2xl"
                   required
                 />
                 <Input
@@ -175,12 +175,13 @@ export default function ForgotPasswordPage() {
                   value={confirmPassword}
                   onChange={(e: any) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
+                  className="bg-brand-bg border-brand-100 rounded-2xl"
                   required
                 />
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary via-brand-primary to-brand-accent text-white font-black text-lg shadow-xl shadow-brand-primary/20 transform active:scale-[0.98] transition-all"
+                  className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black text-lg shadow-xl shadow-brand-primary/20 transform active:scale-[0.98] transition-all"
                 >
                   {loading ? 'Resetting...' : 'Update Password'}
                 </Button>
@@ -198,11 +199,11 @@ export default function ForgotPasswordPage() {
                   <CheckCircle className="h-10 w-10 text-brand-success" />
                 </div>
                 <p className="text-brand-text font-bold">
-                  You can now log in to your account using your new password.
+                  Your password has been reset successfully.
                 </p>
                 <Button
                   onClick={() => router.push('/auth/login')}
-                  className="w-full py-4 rounded-2xl bg-brand-primary text-white font-black text-lg shadow-xl shadow-brand-primary/20"
+                  className="w-full py-4 rounded-2xl bg-linear-to-r from-brand-primary to-brand-accent text-white font-black text-lg shadow-xl shadow-brand-primary/20"
                 >
                   Go to Login
                 </Button>

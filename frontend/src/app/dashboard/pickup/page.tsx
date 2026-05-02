@@ -2,7 +2,26 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Car, Plus, CheckCircle, XCircle, Clock, User, Phone, CreditCard, Calendar, AlertTriangle, Search, Filter, History } from 'lucide-react'
+import { 
+  Car, 
+  Plus, 
+  CheckCircle, 
+  XCircle, 
+  Clock, 
+  User, 
+  Phone, 
+  CreditCard, 
+  Calendar, 
+  AlertTriangle, 
+  Search, 
+  Filter, 
+  History,
+  Leaf,
+  ChevronRight,
+  ShieldCheck,
+  MapPin,
+  X
+} from 'lucide-react'
 
 interface PickupRequest {
   requestId: number
@@ -80,44 +99,9 @@ export default function PickupPage() {
       if (response.ok) {
         const data = await response.json()
         setPickupRequests(data.data?.pickupRequests || data.data || [])
-      } else {
-        // Fallback mock data
-        setPickupRequests([
-          {
-            requestId: 1,
-            studentId: 1,
-            studentName: 'Abebe Kebede',
-            guardianId: 1,
-            guardianName: 'Kebede Abebe',
-            authorizedPersonName: 'Tigist Kebede',
-            authorizedPersonRelationship: 'Aunt',
-            authorizedPersonPhone: '+251911234567',
-            authorizedPersonNationalId: '123456789',
-            status: 'pending',
-            requestDate: '2026-03-30',
-            pickupDate: '2026-03-30',
-            createdAt: new Date().toISOString()
-          },
-          {
-            requestId: 2,
-            studentId: 2,
-            studentName: 'Hanna Girma',
-            guardianId: 2,
-            guardianName: 'Girma Hailu',
-            authorizedPersonName: 'Girma Hailu',
-            authorizedPersonRelationship: 'Father',
-            authorizedPersonPhone: '+251922345678',
-            authorizedPersonNationalId: '987654321',
-            status: 'approved',
-            requestDate: '2026-03-28',
-            pickupDate: '2026-03-28',
-            createdAt: new Date().toISOString(),
-            processedAt: new Date().toISOString()
-          }
-        ])
       }
     } catch (error) {
-      setPickupRequests([])
+      console.error('Fetch error')
     } finally {
       setLoading(false)
     }
@@ -134,14 +118,9 @@ export default function PickupPage() {
       if (response.ok) {
         const data = await response.json()
         setStudents(data.data || [])
-      } else {
-        setStudents([
-          { studentId: 1, fullName: 'Abebe Kebede', classId: 1, className: 'Grade 1A' },
-          { studentId: 2, fullName: 'Hanna Girma', classId: 2, className: 'Grade 2B' }
-        ])
       }
     } catch (error) {
-      setStudents([])
+      console.error('Fetch students error')
     }
   }
 
@@ -172,13 +151,9 @@ export default function PickupPage() {
           notes: ''
         })
         fetchPickupRequests()
-        alert('Pickup request submitted successfully!')
-      } else {
-        const error = await response.json()
-        alert(error.error?.message || 'Failed to create pickup request')
       }
     } catch (error) {
-      alert('Network error. Please make sure the backend is running.')
+      console.error('Submit error')
     }
   }
 
@@ -198,13 +173,9 @@ export default function PickupPage() {
 
       if (response.ok) {
         fetchPickupRequests()
-        alert(`Pickup request ${status} successfully!`)
-      } else {
-        const error = await response.json()
-        alert(error.error?.message || 'Failed to process pickup request')
       }
     } catch (error) {
-      alert('Network error. Please try again.')
+      console.error('Process error')
     }
   }
 
@@ -218,173 +189,181 @@ export default function PickupPage() {
   })
 
   const isGuardian = user?.role === 'guardian'
-  const isTeacher = user?.role === 'teacher' || user?.role === 'homeroom_teacher'
-  const isRegistrar = user?.role === 'registrar'
-  const canProcessRequests = isTeacher || isRegistrar
+  const canProcessRequests = user?.role === 'teacher' || user?.role === 'homeroom_teacher' || user?.role === 'registrar'
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <div className="min-h-screen bg-brand-bg flex items-center justify-center">
+        <div className="animate-pulse text-brand-primary font-black text-xl uppercase tracking-tighter">
+          Synchronizing Logistic Feeds...
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8 flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-black flex items-center">
-              <Car className="h-8 w-8 text-blue-400 mr-3" />
-              Student Pickup
+    <div className="min-h-screen bg-brand-bg relative overflow-hidden font-sans">
+      {/* Decorative Leaves */}
+      <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none rotate-45 scale-125">
+        <Leaf size={280} className="text-brand-accent" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl p-6 lg:p-8 space-y-10">
+        {/* Header Section */}
+        <header className="bg-brand-white rounded-[3rem] p-10 shadow-xl shadow-brand-primary/5 border border-brand-100 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+          <div className="relative z-10">
+            <h1 className="text-4xl font-black text-brand-heading tracking-tight flex items-center gap-3">
+              Pickup Authorization
             </h1>
-            <p className="text-gray-900 mt-2">
-              {isGuardian ? 'Request authorized pickup for your children' : 'Verify and process student pickups'}
+            <p className="text-brand-text font-medium mt-2 text-lg">
+              Secure logistics for student dismissal and safety.
             </p>
           </div>
           
           {isGuardian && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-red px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              className="relative z-10 bg-brand-primary text-white px-8 py-4 rounded-2xl font-black text-xs uppercase shadow-xl shadow-brand-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
             >
-              <Plus className="h-5 w-5" />
-              New Pickup Request
+              <Plus size={18} />
+              New Authorization
             </button>
           )}
-        </div>
+          <Leaf className="absolute -bottom-10 -right-10 text-brand-accent/10 -rotate-12" size={180} />
+        </header>
 
-        {/* Search and Filter */}
-        <div className="mb-6 flex gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-700" />
+        {/* Filter Bar */}
+        <div className="bg-brand-white p-4 rounded-[2.5rem] border border-brand-100 shadow-xl shadow-brand-primary/5 flex flex-col md:flex-row gap-4 items-center">
+          <div className="flex-1 relative w-full">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-brand-accent" size={18} />
             <input
               type="text"
-              placeholder="Search by student name, authorized person, or ID..."
+              placeholder="Search logistics database..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-red  placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+              className="w-full bg-brand-bg border border-brand-100 rounded-3xl py-4 pl-14 pr-6 text-brand-heading font-bold placeholder-brand-text/50 outline-none focus:ring-2 focus:ring-brand-primary/10 transition-all"
             />
           </div>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-red focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
+          <div className="flex gap-4 w-full md:w-auto">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+              className="w-full md:w-48 bg-brand-bg border border-brand-100 rounded-3xl py-4 px-6 text-brand-heading font-black text-[10px] uppercase tracking-widest outline-none focus:ring-2 focus:ring-brand-primary/10"
+            >
+              <option value="all">All Records</option>
+              <option value="pending">In Review</option>
+              <option value="approved">Validated</option>
+              <option value="rejected">Declined</option>
+            </select>
+          </div>
         </div>
 
-        {/* Pickup Requests List */}
-        <div className="space-y-4">
+        {/* Requests List */}
+        <div className="grid grid-cols-1 gap-6">
           {filteredRequests.length === 0 ? (
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
-              <Car className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Pickup Requests</h3>
-              <p className="text-gray-500">
-                {isGuardian ? 'You have not created any pickup requests yet.' : 'No pickup requests to process.'}
-              </p>
+            <div className="bg-brand-white rounded-[3.5rem] p-24 text-center border border-brand-100">
+              <Car className="mx-auto text-brand-accent/20 mb-6" size={80} />
+              <h3 className="text-2xl font-black text-brand-heading">No active authorizations</h3>
+              <p className="text-brand-text font-medium mt-2">The logistics feed is currently quiet.</p>
             </div>
           ) : (
             filteredRequests.map((request) => (
-              <div key={request.requestId} className="bg-white rounded-lg shadow-md p-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  {/* Left: Student Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        request.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        request.status === 'approved' ? 'bg-green-100 text-green-800' :
-                        'bg-red-100 text-red-800'
+              <div key={request.requestId} className="bg-brand-white rounded-[3rem] shadow-xl shadow-brand-primary/5 p-8 md:p-10 border border-brand-100 group hover:border-brand-primary/20 transition-all">
+                <div className="flex flex-col lg:flex-row justify-between gap-10">
+                  <div className="flex-1 space-y-6">
+                    <div className="flex items-center gap-4">
+                      <span className={`px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                        request.status === 'pending' ? 'bg-brand-bg text-brand-secondary border-brand-secondary/20' :
+                        request.status === 'approved' ? 'bg-brand-success/10 text-brand-success border-brand-success/20' :
+                        'bg-red-50 text-red-600 border-red-100'
                       }`}>
-                        {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                        {request.status}
                       </span>
-                      <span className="text-sm text-gray-500">
-                        <Clock className="inline h-4 w-4 mr-1" />
-                        {new Date(request.createdAt).toLocaleDateString()}
+                      <span className="text-[10px] font-black text-brand-text uppercase tracking-widest flex items-center gap-2">
+                        <Clock size={14} className="text-brand-accent" />
+                        SUBMITTED {new Date(request.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                      {request.studentName || `Student #${request.studentId}`}
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <User className="h-4 w-4 mr-2 text-gray-400" />
-                          <span className="font-medium">Authorized Person:</span>
-                          <span className="ml-2">{request.authorizedPersonName}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <CreditCard className="h-4 w-4 mr-2 text-gray-400" />
-                          <span className="font-medium">Relationship:</span>
-                          <span className="ml-2">{request.authorizedPersonRelationship}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Phone className="h-4 w-4 mr-2 text-gray-400" />
-                          <span className="font-medium">Phone:</span>
-                          <span className="ml-2">{request.authorizedPersonPhone}</span>
-                        </div>
-                        <div className="flex items-center text-sm text-gray-600">
-                          <CreditCard className="h-4 w-4 mr-2 text-gray-400" />
-                          <span className="font-medium">National ID:</span>
-                          <span className="ml-2">{request.authorizedPersonNationalId}</span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center text-sm text-gray-600 mt-3">
-                      <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                      <span className="font-medium">Pickup Date:</span>
-                      <span className="ml-2">{new Date(request.pickupDate).toLocaleDateString()}</span>
-                    </div>
-                    
-                    {request.notes && (
-                      <p className="text-sm text-gray-500 mt-2 bg-gray-50 p-2 rounded">
-                        <span className="font-medium">Notes:</span> {request.notes}
+                    <div>
+                      <h3 className="text-3xl font-black text-brand-heading tracking-tight">
+                        {request.studentName}
+                      </h3>
+                      <p className="text-brand-text font-bold text-sm uppercase tracking-widest mt-1">
+                         Student Subject for Release
                       </p>
-                    )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+                      <div className="space-y-4">
+                         <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 bg-brand-bg rounded-xl flex items-center justify-center text-brand-primary">
+                               <User size={18} />
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-brand-text uppercase tracking-widest">Authorized Person</p>
+                               <p className="font-black text-brand-heading">{request.authorizedPersonName}</p>
+                               <p className="text-xs font-bold text-brand-secondary uppercase">{request.authorizedPersonRelationship}</p>
+                            </div>
+                         </div>
+                         <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 bg-brand-bg rounded-xl flex items-center justify-center text-brand-primary">
+                               <CreditCard size={18} />
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-brand-text uppercase tracking-widest">Identification</p>
+                               <p className="font-black text-brand-heading">ID: {request.authorizedPersonNationalId}</p>
+                            </div>
+                         </div>
+                      </div>
+                      <div className="space-y-4">
+                         <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 bg-brand-bg rounded-xl flex items-center justify-center text-brand-primary">
+                               <Phone size={18} />
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-brand-text uppercase tracking-widest">Contact Hash</p>
+                               <p className="font-black text-brand-heading">{request.authorizedPersonPhone}</p>
+                            </div>
+                         </div>
+                         <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 bg-brand-bg rounded-xl flex items-center justify-center text-brand-primary">
+                               <Calendar size={18} />
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-brand-text uppercase tracking-widest">Release Date</p>
+                               <p className="font-black text-brand-heading">{new Date(request.pickupDate).toLocaleDateString()}</p>
+                            </div>
+                         </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Right: Actions */}
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col justify-center gap-3">
                     {canProcessRequests && request.status === 'pending' && (
                       <>
                         <button
-                          onClick={() => {
-                            const notes = prompt('Add verification notes (optional):')
-                            handleProcessRequest(request.requestId, 'approved', notes || undefined)
-                          }}
-                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                          onClick={() => handleProcessRequest(request.requestId, 'approved')}
+                          className="bg-brand-primary text-white px-8 py-4 rounded-2xl font-black text-xs uppercase shadow-lg shadow-brand-primary/20 hover:scale-[1.02] transition-all flex items-center gap-2"
                         >
-                          <CheckCircle className="h-4 w-4" />
-                          Approve
+                          <CheckCircle size={18} />
+                          Approve Release
                         </button>
                         <button
-                          onClick={() => {
-                            const notes = prompt('Add rejection reason (required):')
-                            if (notes) handleProcessRequest(request.requestId, 'rejected', notes)
-                          }}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                          onClick={() => handleProcessRequest(request.requestId, 'rejected')}
+                          className="border-2 border-red-100 text-red-500 px-8 py-4 rounded-2xl font-black text-xs uppercase hover:bg-red-50 transition-all flex items-center gap-2"
                         >
-                          <XCircle className="h-4 w-4" />
-                          Reject
+                          <XCircle size={18} />
+                          Deny Request
                         </button>
                       </>
                     )}
                     
                     {request.status !== 'pending' && (
-                      <div className="text-sm text-gray-500">
-                        <History className="inline h-4 w-4 mr-1" />
-                        Processed: {request.processedAt ? new Date(request.processedAt).toLocaleDateString() : 'N/A'}
+                      <div className="bg-brand-bg p-6 rounded-[2rem] border border-brand-100 text-center">
+                        <ShieldCheck className="mx-auto text-brand-primary mb-2" size={32} />
+                        <p className="text-[10px] font-black text-brand-text uppercase">LOGGED ON</p>
+                        <p className="font-black text-brand-heading">{request.processedAt ? new Date(request.processedAt).toLocaleDateString() : 'N/A'}</p>
                       </div>
                     )}
                   </div>
@@ -395,141 +374,117 @@ export default function PickupPage() {
         </div>
       </div>
 
-      {/* Create Request Modal - Only for Guardians */}
-      {showCreateModal && isGuardian && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <Car className="h-5 w-5 text-blue-600" />
-                New Pickup Request
+      {/* Create Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-[60] overflow-y-auto flex items-center justify-center p-4 bg-brand-heading/40 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-brand-white rounded-[3.5rem] w-full max-w-2xl overflow-hidden shadow-2xl border border-brand-100 flex flex-col">
+            <div className="px-10 py-8 border-b border-brand-100 flex justify-between items-center bg-brand-bg/50">
+              <h3 className="text-2xl font-black text-brand-heading tracking-tight flex items-center gap-3">
+                <Car className="text-brand-primary" />
+                Initiate Authorization
               </h3>
-              <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
-                <XCircle className="h-5 w-5" />
+              <button onClick={() => setShowCreateModal(false)} className="p-2 hover:bg-brand-bg rounded-xl transition-colors">
+                <X size={24} className="text-brand-heading" />
               </button>
             </div>
             
-            <form onSubmit={handleCreateRequest} className="p-6 space-y-4">
-              {/* Student Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Select Student *</label>
-                <select
-                  value={newRequest.studentId}
-                  onChange={(e) => setNewRequest({...newRequest, studentId: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Choose a student...</option>
-                  {students.map(student => (
-                    <option key={student.studentId} value={student.studentId}>
-                      {student.fullName} {student.className ? `(${student.className})` : `(Class ${student.classId})`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Authorized Person */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Authorized Person Name *</label>
-                <input
-                  type="text"
-                  value={newRequest.authorizedPersonName}
-                  onChange={(e) => setNewRequest({...newRequest, authorizedPersonName: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="Full name of person authorized to pick up"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Relationship *</label>
+            <form onSubmit={handleCreateRequest} className="p-10 space-y-6 overflow-y-auto max-h-[70vh] custom-scrollbar">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-black text-brand-text uppercase tracking-widest block mb-2 px-2">Target Student</label>
                   <select
-                    value={newRequest.authorizedPersonRelationship}
-                    onChange={(e) => setNewRequest({...newRequest, authorizedPersonRelationship: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    value={newRequest.studentId}
+                    onChange={(e) => setNewRequest({...newRequest, studentId: e.target.value})}
+                    className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none focus:ring-2 focus:ring-brand-primary/10"
                     required
                   >
-                    <option value="">Select...</option>
-                    <option value="Parent">Parent</option>
-                    <option value="Father">Father</option>
-                    <option value="Mother">Mother</option>
-                    <option value="Grandparent">Grandparent</option>
-                    <option value="Aunt">Aunt</option>
-                    <option value="Uncle">Uncle</option>
-                    <option value="Sibling">Sibling</option>
-                    <option value="Guardian">Guardian</option>
-                    <option value="Other">Other</option>
+                    <option value="">Select dependent...</option>
+                    {students.map(student => (
+                      <option key={student.studentId} value={student.studentId}>{student.fullName}</option>
+                    ))}
                   </select>
                 </div>
+
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-black text-brand-text uppercase tracking-widest block mb-2 px-2">Authorized Designee</label>
+                  <input
+                    type="text"
+                    value={newRequest.authorizedPersonName}
+                    onChange={(e) => setNewRequest({...newRequest, authorizedPersonName: e.target.value})}
+                    className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none"
+                    placeholder="Full legal name"
+                    required
+                  />
+                </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                  <label className="text-[10px] font-black text-brand-text uppercase tracking-widest block mb-2 px-2">Relationship</label>
+                  <input
+                    type="text"
+                    value={newRequest.authorizedPersonRelationship}
+                    onChange={(e) => setNewRequest({...newRequest, authorizedPersonRelationship: e.target.value})}
+                    className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none"
+                    placeholder="e.g. Grandparent"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-brand-text uppercase tracking-widest block mb-2 px-2">Contact Phone</label>
                   <input
                     type="tel"
                     value={newRequest.authorizedPersonPhone}
                     onChange={(e) => setNewRequest({...newRequest, authorizedPersonPhone: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none"
                     placeholder="+251..."
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-brand-text uppercase tracking-widest block mb-2 px-2">National ID</label>
+                  <input
+                    type="text"
+                    value={newRequest.authorizedPersonNationalId}
+                    onChange={(e) => setNewRequest({...newRequest, authorizedPersonNationalId: e.target.value})}
+                    className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none"
+                    placeholder="Document Number"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-brand-text uppercase tracking-widest block mb-2 px-2">Pickup Date</label>
+                  <input
+                    type="date"
+                    value={newRequest.pickupDate}
+                    onChange={(e) => setNewRequest({...newRequest, pickupDate: e.target.value})}
+                    className="w-full bg-brand-bg border border-brand-100 rounded-2xl py-4 px-6 text-sm font-bold outline-none"
                     required
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">National ID *</label>
-                <input
-                  type="text"
-                  value={newRequest.authorizedPersonNationalId}
-                  onChange={(e) => setNewRequest({...newRequest, authorizedPersonNationalId: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="National ID number for verification"
-                  required
-                />
+              <div className="bg-brand-primary/5 p-6 rounded-[2rem] border border-brand-primary/10 flex items-start gap-4">
+                 <ShieldCheck className="text-brand-primary mt-1" size={20} />
+                 <p className="text-xs font-bold text-brand-heading leading-relaxed">
+                   Authorized personnel must present original identification matching these credentials. Release will not be granted without verification.
+                 </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Pickup Date *</label>
-                <input
-                  type="date"
-                  value={newRequest.pickupDate}
-                  onChange={(e) => setNewRequest({...newRequest, pickupDate: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  min={new Date().toISOString().split('T')[0]}
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Additional Notes</label>
-                <textarea
-                  value={newRequest.notes}
-                  onChange={(e) => setNewRequest({...newRequest, notes: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  rows={2}
-                  placeholder="Any special instructions or notes..."
-                />
-              </div>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
-                <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
-                <p className="text-sm text-blue-800">
-                  The authorized person must present their physical ID matching the national ID number provided during pickup. Teacher will verify before releasing the student.
-                </p>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex justify-end gap-4 pt-6 border-t border-brand-100">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
+                  className="px-8 py-4 text-brand-text font-black text-xs uppercase hover:underline"
                 >
-                  Cancel
+                  Discard
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                  className="bg-brand-primary text-white px-10 py-4 rounded-2xl font-black text-xs uppercase shadow-xl shadow-brand-primary/20"
                 >
-                  Submit Request
+                  Commit Authorization
                 </button>
               </div>
             </form>

@@ -3,18 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export const sequelize = new Sequelize({
-  dialect: 'mysql',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3306'),
-  database: process.env.DB_NAME || 'digital_school_db',
-  username: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
+export const sequelize = new Sequelize(process.env.DB_URL || '', {
+  dialect: 'postgres',
   logging: process.env.NODE_ENV === 'development' ? console.log : false,
   dialectOptions: {
-    connectTimeout: 10000,
-    acquireTimeout: 10000,
-    timeout: 10000,
     ssl: {
       require: true,
       rejectUnauthorized: false
@@ -23,19 +15,14 @@ export const sequelize = new Sequelize({
   pool: {
     max: 5,
     min: 0,
-    acquire: 20000,
-    idle: 5000,
-    evict: 1000,
+    acquire: 30000,
+    idle: 10000,
   },
   define: {
     timestamps: true,
     underscored: false,
     createdAt: 'createdAt',
     updatedAt: false,
-  },
-  retry: {
-    max: 3,
-    timeout: 5000,
   },
 });
 

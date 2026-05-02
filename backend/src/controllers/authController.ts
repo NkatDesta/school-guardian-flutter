@@ -12,18 +12,19 @@ export class AuthController {
       // Hash password
       const passwordHash = await AuthService.hashPassword(password);
 
-      // Insert user into MySQL database
+      // Insert user into Supabase database
       const [result] = await sequelize.query(`
         INSERT INTO users (email, password_hash, role, full_name, created_at, is_active, phone_no, address)
-        VALUES (?, ?, 'guardian', ?, NOW(), 1, ?, ?)
+        VALUES (?, ?, 'guardian', ?, NOW(), true, ?, ?)
+        RETURNING user_id
       `, {
         replacements: [email, passwordHash, fullName, phoneNo || '', address || '']
       });
 
-      // Get the inserted user ID
-      const userId = (result as any).insertId;
+      // Get the inserted user ID (PostgreSQL returns an array of rows)
+      const userId = (result as any)[0].user_id;
 
-      console.log(' User registered in MySQL:', { email, fullName, userId });
+      console.log(' User registered in Supabase:', { email, fullName, userId });
 
       const response: ApiResponse = {
         success: true,
@@ -136,7 +137,7 @@ export class AuthController {
       const [users] = await sequelize.query(`
         SELECT user_id, email, password_hash, role, full_name 
         FROM users 
-        WHERE email = ? AND is_active = 1
+        WHERE email = ? AND is_active = true
       `, {
         replacements: [email]
       });
