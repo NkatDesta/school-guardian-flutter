@@ -119,6 +119,18 @@ const startServer = async () => {
     // Connect to database
     await connectDatabase();
     
+    // Ensure required directories exist
+    const fs = require('fs');
+    const path = require('path');
+    const dirs = ['uploads', 'uploads/documents'];
+    dirs.forEach(dir => {
+      const fullPath = path.join(__dirname, '..', dir);
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+        logger.info(`Created directory: ${dir}`);
+      }
+    });
+    
     app.listen(PORT, '0.0.0.0', () => {
       logger.info(`Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);

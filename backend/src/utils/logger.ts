@@ -1,5 +1,5 @@
-import { createWriteStream, WriteStream } from 'fs';
-import { join } from 'path';
+import { createWriteStream, WriteStream, existsSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
 
 class Logger {
   private logStream: WriteStream | null = null;
@@ -11,6 +11,13 @@ class Logger {
     } else {
       // In production, log to file
       const logPath = join(__dirname, '../../logs/app.log');
+      const logDir = dirname(logPath);
+      
+      // Ensure logs directory exists
+      if (!existsSync(logDir)) {
+        mkdirSync(logDir, { recursive: true });
+      }
+      
       this.logStream = createWriteStream(logPath, { flags: 'a' });
     }
   }
