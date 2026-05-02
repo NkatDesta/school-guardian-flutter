@@ -153,14 +153,9 @@ export default function HomePage() {
           </p>
           
           <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-            <Link href="/auth/login">
-              <Button className="px-10 py-6 text-xl bg-linear-to-r from-brand-primary to-brand-accent hover:opacity-90 text-white font-black rounded-2xl shadow-2xl shadow-brand-primary/20 transform hover:scale-105 transition-all">
-                Get Started Now <ChevronRight className="ml-2 w-6 h-6" />
-              </Button>
-            </Link>
             <button 
               onClick={() => scrollToSection('about-us')}
-              className="px-10 py-6 text-xl bg-white text-brand-heading border-2 border-brand-100 hover:border-brand-primary font-black rounded-2xl transition-all"
+              className="px-10 py-6 text-xl bg-white text-brand-heading border-2 border-brand-100 hover:border-brand-primary font-black rounded-2xl transition-all shadow-xl shadow-brand-primary/5"
             >
               Learn More
             </button>
@@ -352,12 +347,8 @@ export default function HomePage() {
             </div>
           </div>
           
-          <div className="mt-16">
-            <Link href="/auth/login">
-              <Button className="bg-linear-to-r from-brand-primary to-brand-accent hover:opacity-90 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl shadow-brand-primary/20 transform hover:scale-105 transition-all">
-                Log In To Portal
-              </Button>
-            </Link>
+          <div className="mt-8 text-brand-primary/40 font-bold uppercase tracking-widest text-sm">
+            Hawi Dandi Boru School
           </div>
         </div>
       </section>
