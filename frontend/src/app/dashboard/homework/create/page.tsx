@@ -8,8 +8,8 @@ import { Input } from '../../../../components/ui/Input'
 export default function CreateHomeworkPage() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [subjectId, setSubjectId] = useState('')
-  const [classId, setClassId] = useState('')
+  const [subject, setSubject] = useState('')
+  const [className, setClassName] = useState('')
   const [dueDate, setDueDate] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -36,8 +36,8 @@ export default function CreateHomeworkPage() {
         body: JSON.stringify({
           title,
           description,
-          subjectId: parseInt(subjectId),
-          classId: parseInt(classId),
+          subject,
+          className,
           dueDate
         })
       })
@@ -45,7 +45,7 @@ export default function CreateHomeworkPage() {
       const data = await response.json()
 
       if (data.success) {
-        router.push('/dashboard/homework')
+        router.push('/dashboard/teacher')
       } else {
         // Extract specific validation error if available
         if (data.error?.details && data.error.details.length > 0) {
@@ -79,7 +79,7 @@ export default function CreateHomeworkPage() {
         )}
 
         <div className="bg-white shadow rounded-lg">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="p-8 space-y-6">
             <div>
               <Input
                 label="Homework Title"
@@ -106,22 +106,22 @@ export default function CreateHomeworkPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Input
-                  label="Subject ID"
-                  type="number"
-                  value={subjectId}
-                  onChange={(e) => setSubjectId(e.target.value)}
-                  placeholder="Enter subject ID"
+                  label="Subject"
+                  type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="e.g. Mathematics"
                   required
                 />
               </div>
 
               <div>
                 <Input
-                  label="Class ID"
-                  type="number"
-                  value={classId}
-                  onChange={(e) => setClassId(e.target.value)}
-                  placeholder="Enter class ID"
+                  label="Class Name"
+                  type="text"
+                  value={className}
+                  onChange={(e) => setClassName(e.target.value)}
+                  placeholder="e.g. Grade 1-A"
                   required
                 />
               </div>
@@ -141,7 +141,7 @@ export default function CreateHomeworkPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full"
+                className="w-full bg-brand-primary hover:bg-brand-primaryHover text-white py-4 rounded-xl font-bold transition-all"
               >
                 {loading ? 'Creating...' : 'Create Homework'}
               </Button>

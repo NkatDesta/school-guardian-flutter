@@ -178,15 +178,8 @@ export const schemas = {
       'string.max': 'Class name must not exceed 100 characters',
       'any.required': 'Class name is required',
     }),
-    teacherId: Joi.number().integer().positive().required().messages({
-      'number.base': 'Teacher ID must be a number',
-      'number.integer': 'Teacher ID must be an integer',
-      'number.positive': 'Teacher ID must be positive',
-      'any.required': 'Teacher ID is required',
-    }),
-    dueDate: Joi.date().min('now').required().messages({
+    dueDate: Joi.date().required().messages({
       'date.base': 'Due date must be a valid date',
-      'date.min': 'Due date must be in the future',
       'any.required': 'Due date is required',
     }),
   }),

@@ -72,35 +72,7 @@ export default function EventsPage() {
         const data = response_data.data?.events || response_data
         setEvents(Array.isArray(data) ? data : [])
       } else {
-        // Fallback mock data
-        setEvents([
-          {
-            eventId: 1,
-            title: 'Parent-Teacher Conference',
-            description: 'Quarterly parent-teacher meetings',
-            eventDate: '2026-03-30',
-            eventType: 'meeting',
-            location: 'Conference Room A',
-            createdBy: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            isActive: true,
-            targetAudience: 'all'
-          },
-          {
-            eventId: 2,
-            title: 'Science Fair Exhibition',
-            description: 'Annual science fair showcasing student projects',
-            eventDate: '2026-04-05',
-            eventType: 'activity',
-            location: 'School Auditorium',
-            createdBy: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            isActive: true,
-            targetAudience: 'all'
-          }
-        ])
+        console.error('Failed to fetch events')
       }
     } catch (error) {
       console.error('Error fetching events:', error)
@@ -241,8 +213,8 @@ export default function EventsPage() {
         {/* Header with Create Button */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">Events</h1>
-            <p className="text-gray-300 mt-1">School calendar and upcoming activities</p>
+            <h1 className="text-3xl font-black text-black">Events</h1>
+            <p className="text-gray-700 mt-1 font-medium">School calendar and upcoming activities</p>
           </div>
           {canCreateEvent && (
             <button
@@ -271,8 +243,8 @@ export default function EventsPage() {
                 <div key={event.eventId} className="p-6 hover:bg-gray-50 transition-colors relative group">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-[16px] font-bold text-blue-900 mb-2 flex items-center gap-2">
-                        {index + 1}. {event.title}
+                      <h3 className="text-[18px] font-black text-black mb-2 flex items-center gap-2">
+                        {event.title}
                         <span className={`px-2 py-0.5 rounded text-xs font-medium ${
                           event.eventType === 'meeting' ? 'bg-blue-100 text-blue-800' :
                           event.eventType === 'activity' ? 'bg-green-100 text-green-800' :
@@ -283,8 +255,11 @@ export default function EventsPage() {
                           {event.eventType ? (event.eventType.charAt(0).toUpperCase() + event.eventType.slice(1)) : 'Event'}
                         </span>
                       </h3>
-                      <p className="text-sm font-semibold text-gray-800 mb-2">
+                      <p className="text-sm font-bold text-black mb-2">
                         Date: {event.eventDate ? new Date(event.eventDate).toLocaleDateString() : 'TBD'} • Location: {event.location || 'TBD'}
+                      </p>
+                      <p className="text-black text-sm mb-4 line-clamp-2 leading-relaxed">
+                        {event.description}
                       </p>
                       <button 
                         onClick={() => setViewingEvent(event)}

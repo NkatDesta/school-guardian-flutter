@@ -11,7 +11,10 @@ router.use(authenticateToken);
 // Module 1: Get classes assigned to teacher
 router.get('/classes', new TeacherController().getAssignedClasses);
 
-// Module 1: Get students assigned to teacher
+// Module 1: Get students in a specific class
+router.get('/classes/:classId/students', new TeacherController().getTeacherStudents);
+
+// Module 1: Get students assigned to teacher (all)
 router.get('/students', new TeacherController().getTeacherStudents);
 
 export default router;

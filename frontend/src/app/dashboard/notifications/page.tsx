@@ -163,11 +163,11 @@ export default function NotificationsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-black text-white flex items-center tracking-tight">
+            <h1 className="text-3xl font-black text-black flex items-center tracking-tight">
               <Bell className="h-8 w-8 text-brand-primary mr-3" />
               Notifications
             </h1>
-            <p className="text-gray-300 mt-2">Stay updated with school activities</p>
+            <p className="text-gray-700 mt-2 font-medium">Stay updated with school activities</p>
           </div>
           
           {canManage && (
@@ -191,20 +191,20 @@ export default function NotificationsPage() {
           </div>
         ) : (
           <div className="bg-white rounded-3xl shadow-xl shadow-brand-900/5 overflow-hidden border border-gray-50">
-            <div className="px-6 py-5 border-b border-gray-100 bg-brand-50/50">
-               <h2 className="text-lg font-black text-brand-900 tracking-tight uppercase text-xs">Active announcements</h2>
-            </div>
             <div className="divide-y divide-gray-200">
               {notifications.map((notification, index) => (
                 <div key={notification.id} className="p-6 hover:bg-gray-50 transition-colors relative group">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-brand-900 mb-1 group-hover:text-brand-primary transition-colors">
-                        {index + 1}. {notification.title}
+                      <h3 className="text-xl font-black text-black mb-1 group-hover:text-brand-primary transition-colors">
+                        {notification.title}
                       </h3>
-                      <p className="text-sm font-semibold text-gray-800 mb-2">
+                      <p className="text-sm font-bold text-black mb-2">
                         Posted : {notification.time}
                         {notification.type === 'error' && <span className="text-red-600 ml-2 uppercase text-xs tracking-wider bg-red-100 px-2 py-0.5 rounded">Emergency</span>}
+                      </p>
+                      <p className="text-black text-sm mb-4 line-clamp-2 leading-relaxed">
+                        {notification.content || notification.message}
                       </p>
                       <button 
                         onClick={() => setViewingNotif(notification)}

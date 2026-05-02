@@ -34,8 +34,8 @@ export default function TeacherDashboard() {
   const [user, setUser] = useState<UserData | null>(null)
   const router = useRouter()
   const [selectedClassId, setSelectedClassId] = useState<string | null>(null)
-
-  const { data: classes } = useTeacherClasses()
+ 
+  const { data: classes, isLoading: isLoadingClasses } = useTeacherClasses()
   const { data: homework } = useTeacherHomework()
   const { data: students, isLoading: isLoadingStudents } = useTeacherStudents(selectedClassId || '')
 
@@ -160,7 +160,13 @@ export default function TeacherDashboard() {
               Classrooms
             </h3>
             <div className="space-y-4 flex-1">
-              {classes?.slice(0, 4).map((cls: any, i: number) => {
+              {isLoadingClasses ? (
+                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary"></div>
+                  <p className="text-brand-text text-sm font-medium italic">Loading classrooms...</p>
+                </div>
+              ) : classes && classes.length > 0 ? (
+                classes.slice(0, 4).map((cls: any, i: number) => {
                 const isExpanded = selectedClassId === cls.classId || selectedClassId === cls.id;
                 const activeId = cls.classId || cls.id;
                 
@@ -217,9 +223,9 @@ export default function TeacherDashboard() {
                     )}
                   </div>
                 )
-              }) || (
-                  <p className="text-brand-text text-center font-medium italic mt-10">No active classes found.</p>
-                )}
+              })) : (
+                <p className="text-brand-text text-center font-medium italic mt-10">No active classes found.</p>
+              )}
             </div>
             <button className="mt-8 w-full py-4 bg-brand-primary text-white font-black text-xs uppercase rounded-2xl shadow-lg shadow-brand-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
               MANAGE ALL STUDENTS

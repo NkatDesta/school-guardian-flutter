@@ -24,12 +24,19 @@ export class TeacherController {
         return;
       }
 
+      console.log(`[DEBUG] Fetching classes for UserID: ${userId}, Role: ${userRole}`);
       let classes: any[] = [];
 
       if (userRole === 'homeroom_teacher') {
         // For homeroom teachers, get their assigned homeroom class
         const results = await sequelize.query(`
-          SELECT c.class_id as classId, c.class_level as className, c.class_level as grade
+          SELECT 
+            c.class_id as id, 
+            c.class_id as classId,
+            c.class_level as classLevel, 
+            c.class_level as className, 
+            c.academic_year as academicYear,
+            (SELECT COUNT(*) FROM "Students" s WHERE s.class_id = c.class_id) as totalStudents
           FROM Classrooms c
           WHERE c.homeroom_teacher_id = ?
           ORDER BY c.class_level
@@ -41,7 +48,13 @@ export class TeacherController {
       } else {
         // For regular teachers, get all classes they teach
         const results = await sequelize.query(`
-          SELECT DISTINCT c.class_id as classId, c.class_level as className, c.class_level as grade
+          SELECT DISTINCT 
+            c.class_id as id, 
+            c.class_id as classId,
+            c.class_level as classLevel, 
+            c.class_level as className, 
+            c.academic_year as academicYear,
+            (SELECT COUNT(*) FROM "Students" s WHERE s.class_id = c.class_id) as totalStudents
           FROM Classrooms c
           WHERE c.teacher_id = ? OR c.homeroom_teacher_id = ?
           ORDER BY c.class_level
@@ -51,6 +64,9 @@ export class TeacherController {
         });
         classes = results as any[];
       }
+      
+      console.log(`[DEBUG] Found ${classes.length} classes for user ${userId}`);
+      console.log('[DEBUG] Classes:', JSON.stringify(classes));
 
       res.json({
         success: true,
@@ -82,21 +98,22 @@ export class TeacherController {
         return;
       }
 
-      // Simple query to get all students with their guardians
+      // Get students for a specific class
+      const classId = req.params.classId;
+      
       const results = await sequelize.query(`
         SELECT 
           s.student_id as studentId,
           s.full_name as fullName,
-          s.class_id as grade,
+          s.class_id as classId,
           s.guardian_id,
-          u.full_name as guardianName,
-          u.email as guardianEmail,
-          u.phone_no as guardianPhone
-        FROM Students s
+          u.full_name as guardianName
+        FROM "Students" s
         LEFT JOIN users u ON s.guardian_id = u.user_id
-        WHERE s.guardian_id IS NOT NULL
+        ${classId ? 'WHERE s.class_id = ?' : ''}
         ORDER BY s.full_name
       `, {
+        replacements: classId ? [classId] : [],
         type: QueryTypes.SELECT
       });
 
