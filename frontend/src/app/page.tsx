@@ -358,14 +358,12 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           {/* Logo Removed */}
           
-          <div className="h-px w-full bg-brand-primary/10 mb-8" />
-          
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center">
+          <div className="flex flex-col items-center gap-4 text-center">
             <p className="text-brand-text/60 text-sm font-medium">
               Strengthening the bond between parents and education.
             </p>
             <p className="text-brand-heading/40 text-[10px] font-black uppercase tracking-[0.3em]">
-              © {new Date().getFullYear()} Hawi Dandi Boru School. All rights reserved.
+              © {new Date().getFullYear()} All rights reserved.
             </p>
           </div>
         </div>
