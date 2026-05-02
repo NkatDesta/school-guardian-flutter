@@ -355,7 +355,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           {/* Logo Removed */}
 
-          <div className="flex flex-col items-center gap-4 text-center">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <p className="text-brand-text/60 text-sm font-medium">
               Strengthening the bond between parents and education.
             </p>
