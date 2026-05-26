@@ -313,10 +313,10 @@ export default function RegisterPage() {
         <div className="bg-brand-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-100">
           <Shield className="h-8 w-8 text-brand-primary" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900">Verify Your Phone</h3>
+        <h3 className="text-lg font-semibold text-gray-900">Verify Your Email</h3>
         <p className="text-gray-600 mt-2 text-sm">
-          We've sent a 6-digit verification code to<br />
-          <strong className="text-gray-900">{formData.phoneNo}</strong>
+          A 6-digit verification code has been generated for<br />
+          <strong className="text-gray-900">{formData.email}</strong>
         </p>
         {studentName && (
           <div className="mt-4 p-2 bg-brand-50 text-brand-primary rounded-lg text-sm border border-brand-100 font-bold">
@@ -352,7 +352,7 @@ export default function RegisterPage() {
           onClick={handleResendOTP}
           className="text-brand-primary hover:underline text-sm font-medium"
         >
-          Didn't receive the code? Resend
+          Resend Code
         </button>
       </div>
 

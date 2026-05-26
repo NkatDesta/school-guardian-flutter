@@ -108,7 +108,14 @@ export const validateRegistration = async (req: Request, res: Response): Promise
 
     // Store data temporarily in the database and send OTP
     const tempId = `reg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
+    // Clean up any stale or incomplete pending registration for this email or phone to avoid unique index violations
+    await PendingRegistrationModel.destroy({
+      where: {
+        [Op.or]: [{ email }, { phoneNo }]
+      }
+    });
+
     // Hash password immediately for security in the pending table
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -127,11 +134,11 @@ export const validateRegistration = async (req: Request, res: Response): Promise
 
     // Generate and send OTP
     const otp = await OTPService.generateOTP(tempId);
-    await OTPService.sendOTP(phoneNo, otp);
+    await OTPService.sendOTP(email, otp);
 
     res.status(200).json({
       success: true,
-      message: 'Validation passed. OTP sent to phone.',
+      message: 'Validation passed. Verification code sent to email.',
       data: {
         tempId,
         studentName
@@ -233,8 +240,8 @@ export const completeRegistration = async (req: Request, res: Response): Promise
 
     // Check uploaded files
     if (!files || !files.certificate || !files.idFront || !files.idBack) {
-      logger.error('Missing documents in request:', { 
-        hasFiles: !!files, 
+      logger.error('Missing documents in request:', {
+        hasFiles: !!files,
         cert: files?.certificate?.length,
         idFront: files?.idFront?.length,
         idBack: files?.idBack?.length

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { GuardianRegistrationModel } from '../models/GuardianRegistration';
 import { StudentModel } from '../models/Student';
+import { ClassroomModel } from '../models/Classroom';
 import { UserModel } from '../models/User';
 import { SystemLogModel } from '../models/SystemLog';
 import { logger } from '../utils/logger';
