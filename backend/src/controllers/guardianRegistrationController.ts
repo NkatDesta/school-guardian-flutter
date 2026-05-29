@@ -128,7 +128,7 @@ export const validateRegistration = async (req: Request, res: Response): Promise
       nationalId,
       studentName,
       relationshipType,
-      otpVerified: false,
+      //otpVerified: false,
       expiresAt: new Date(Date.now() + 30 * 60 * 1000) // 30 minutes expiry
     });
 
@@ -397,6 +397,147 @@ export const getRegistrationStatus = async (req: Request, res: Response): Promis
     res.status(500).json({
       success: false,
       error: { code: 'STATUS_ERROR', message: 'Failed to get registration status' }
+    });
+  }
+};
+
+/**
+ * Simple registration without OTP - Direct submission for registrar approval
+ */
+/**
+ * Simple registration without OTP - Direct submission for registrar approval
+ */
+export const simpleDirectRegistration = async (req: Request, res: Response): Promise<void> => {
+  try {
+    console.log('=== Simple Direct Registration ===');
+    
+    const {
+      fullName,
+      email,
+      phoneNo,
+      nationalId,
+      studentName,
+      relationshipType,
+      password
+    } = req.body;
+
+    let relationshipValue=relationshipType;
+    if (relationshipValue==='Parent'){
+      relationshipValue='parent';
+    }else if(relationshipValue=== 'Legal Guardian'){
+      relationshipValue= 'legal_guardian';
+    }
+
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+    // Validate required fields
+    if (!fullName || !email || !phoneNo || !nationalId || !studentName || !password) {
+      res.status(400).json({
+        success: false,
+        error: { message: 'All fields are required' }
+      });
+      return;
+    }
+
+    // Validate files
+    if (!files || !files.certificate || !files.idFront || !files.idBack) {
+      res.status(400).json({
+        success: false,
+        error: { message: 'All documents are required: certificate, ID front, ID back' }
+      });
+      return;
+    }
+
+    // Check if email already exists
+    const existingRegistration = await GuardianRegistrationModel.findOne({
+      where: { 
+        email: email,
+        status: { [Op.in]: ['pending', 'approved'] }
+      }
+    });
+
+    if (existingRegistration) {
+      res.status(400).json({
+        success: false,
+        error: { message: 'Email already registered' }
+      });
+      return;
+    }
+
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // ========== SAVE FILES TO DISK ==========
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Create uploads directory if it doesn't exist
+    const uploadDir = path.join(__dirname, '../../uploads/documents');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Helper function to get file extension
+    const getExt = (filename: string) => filename.split('.').pop() || 'jpg';
+    
+    // Save certificate
+    const certFileName = `cert_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${getExt(files.certificate[0].originalname)}`;
+    const certPath = path.join(uploadDir, certFileName);
+    fs.writeFileSync(certPath, files.certificate[0].buffer);
+    
+    // Save ID front
+    const frontFileName = `front_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${getExt(files.idFront[0].originalname)}`;
+    const frontPath = path.join(uploadDir, frontFileName);
+    fs.writeFileSync(frontPath, files.idFront[0].buffer);
+    
+    // Save ID back
+    const backFileName = `back_${Date.now()}_${Math.random().toString(36).substr(2, 6)}.${getExt(files.idBack[0].originalname)}`;
+    const backPath = path.join(uploadDir, backFileName);
+    fs.writeFileSync(backPath, files.idBack[0].buffer);
+
+    console.log('Files saved:', { certPath, frontPath, backPath });
+
+    // Create registration record with file paths
+    const registration = await GuardianRegistrationModel.create({
+      fullName,
+      email,
+      phoneNo,
+      nationalId,
+      studentName,
+      relationshipType: relationshipValue,
+      passwordHash,
+      certificateDocumentPath: certPath,  // ← Now has a valid path
+      idFrontPath: frontPath,              // ← Now has a valid path
+      idBackPath: backPath,                // ← Now has a valid path
+      status: 'pending',
+      correctionAttempts: 2
+    });
+
+    console.log(`Registration created with ID: ${registration.registrationId}`);
+
+    // Log the action
+    await SystemLogModel.create({
+      userId: null,
+      action: 'GUARDIAN_REGISTRATION_SUBMITTED',
+      tableName: 'GuardianRegistrations',
+      recordId: registration.registrationId,
+      newValues: { email: email, studentName: studentName }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Registration submitted successfully! The registrar will review your application.',
+      data: {
+        registrationId: registration.registrationId,
+        status: 'pending'
+      }
+    });
+
+  } catch (error: any) {
+    console.error('Simple registration error:', error);
+    res.status(500).json({
+      success: false,
+      error: { message: error.message || 'Registration failed. Please try again.' }
     });
   }
 };

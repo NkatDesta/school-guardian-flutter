@@ -1,12 +1,37 @@
+# Flutter
+.dart_tool/
+.packages
+.pub/
+build/
+
+# Flutter generated
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# VS Code
+.vscode/
+
+# Android
+android/.gradle/
+android/app/build/
+
+# iOS
+ios/Pods/
+
+# Node.js
 node_modules/
+backend/node_modules/
+
+# TypeScript build output
 dist/
-.next/
-.env
-.env.local
-.env.*
-uploads/
-logs/
-server_log.txt
+backend/dist/
+
+# Logs
 *.log
-*.txt
-*.tsbuildinfo
+backend/logs/
+
+# Environment files
+.env
+
+# Mac
+.DS_Store

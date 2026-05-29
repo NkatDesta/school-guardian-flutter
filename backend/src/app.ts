@@ -40,16 +40,20 @@ app.use(helmet({
 
 // CORS configuration
 const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
+  'http://localhost:3000',      // Your backend
+  'http://localhost:3001',      // Alternative backend port
+  'http://localhost:8080',      // Common Flutter web port
+  'http://localhost:5500',      // Another common port
+  'http://127.0.0.1:8080',      // Localhost alternative
+  'http://192.168.1.5:8080',    // Your network IP (update with your actual IP)
+  'http://192.168.1.5:3000',    // Your network IP for backend
   process.env.FRONTEND_URL
 ].filter((origin): origin is string => Boolean(origin));
 
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
+  origin: '*', // Allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
 }));
 
 // Rate limiting
@@ -70,6 +74,7 @@ app.use(compression());
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.options('*', cors());
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

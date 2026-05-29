@@ -89,6 +89,7 @@ export const getRegistrationDetails = async (req: Request, res: Response): Promi
   }
 };
 
+
 /**
  * Approve registration and create user account
  */
@@ -96,6 +97,8 @@ export const approveRegistration = async (req: Request, res: Response): Promise<
   try {
     const { registrationId } = req.params;
     const registrarId = (req as any).user?.userId;
+
+    console.log(`Approving registration: ${registrationId}`);
 
     const registration = await GuardianRegistrationModel.findByPk(registrationId);
 
@@ -115,47 +118,69 @@ export const approveRegistration = async (req: Request, res: Response): Promise<
       return;
     }
 
-    const { studentId } = req.body;
+    let student;
+    let finalStudentId;
 
-    if (!studentId) {
-      res.status(400).json({
-        success: false,
-        error: { code: 'MISSING_STUDENT_ID', message: 'You must select a student to link to this guardian' }
-      });
-      return;
-    }
+    // Check if a student with this name already exists
+    student = await StudentModel.findOne({
+      where: { fullName: registration.studentName }
+    });
 
-    // Find student
-    const student = await StudentModel.findByPk(studentId);
-
+    // If student doesn't exist, create one with all required fields
     if (!student) {
-      res.status(400).json({
-        success: false,
-        error: { code: 'STUDENT_NOT_FOUND', message: 'The selected student was not found in the database' }
-      });
-      return;
+      console.log(`Creating new student: ${registration.studentName}`);
+      
+      // Find a default classroom
+      let defaultClass = await ClassroomModel.findOne();
+      if (!defaultClass) {
+        // Create a default class if none exists
+        defaultClass = await ClassroomModel.create({
+          className: 'Pending Assignment',
+          grade: 'Not Assigned',
+          academicYear: new Date().getFullYear().toString(),
+          isActive: true
+        } as any);
+        console.log(`Created default class with ID: ${defaultClass.classId}`);
+      }
+      
+      // Create student with all required fields
+      student = await StudentModel.create({
+        fullName: registration.studentName,
+        classId: defaultClass.classId,      // Required - use default class
+        dob: new Date(),                     // Required - use current date
+        emergencyContact: registration.phoneNo, // Required - use guardian's phone
+        guardianId: null,                    // Will update after user creation
+        isActive: true,
+        createdAt: new Date()
+      } as any);
+      console.log(`Student created with ID: ${student.studentId}`);
     }
+    
+    finalStudentId = student.studentId;
 
-    // Create user account
+    // Create user account for guardian
+    console.log(`Creating user account for: ${registration.email}`);
     const user = await UserModel.create({
       email: registration.email,
       passwordHash: registration.passwordHash,
       role: UserRole.GUARDIAN,
       fullName: registration.fullName,
       phoneNo: registration.phoneNo,
-      address: '', // Can be updated later
+      address: '',
       nationalId: registration.nationalId,
       isActive: true,
       createdAt: new Date()
-    });
+    } as any);
+    
+    console.log(`User created with ID: ${user.userId}`);
 
     // Update student with guardianId
     await student.update({ guardianId: user.userId });
 
-    // Update registration status and studentId
+    // Update registration status
     await registration.update({
       status: 'approved',
-      studentId: student.studentId,
+      studentId: finalStudentId,
       reviewedBy: registrarId,
       reviewedAt: new Date()
     });
@@ -166,8 +191,15 @@ export const approveRegistration = async (req: Request, res: Response): Promise<
       action: 'GUARDIAN_REGISTRATION_APPROVED',
       tableName: 'GuardianRegistrations',
       recordId: registration.registrationId,
-      newValues: { userId: user.userId, email: registration.email }
+      newValues: { 
+        userId: user.userId, 
+        email: registration.email,
+        studentId: finalStudentId,
+        studentName: registration.studentName
+      }
     });
+
+    console.log(`Registration ${registrationId} approved successfully`);
 
     res.status(200).json({
       success: true,
@@ -175,15 +207,17 @@ export const approveRegistration = async (req: Request, res: Response): Promise<
       data: {
         userId: user.userId,
         email: user.email,
+        studentId: finalStudentId,
+        studentName: registration.studentName,
         status: 'approved'
       }
     });
 
   } catch (error) {
-    logger.error('Approve registration error:', error);
+    console.error('Approve registration error:', error);
     res.status(500).json({
       success: false,
-      error: { code: 'APPROVAL_ERROR', message: 'Failed to approve registration' }
+      error: { code: 'APPROVAL_ERROR', message: 'Failed to approve registration: ' + (error as Error).message }
     });
   }
 };
