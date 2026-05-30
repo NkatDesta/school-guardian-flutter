@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'pending_registrations_page.dart';
 import '../home_page.dart';
+import '../notifications/notification_page.dart';
+import '../events/events_page.dart';
 
 class RegistrarDashboard extends StatelessWidget {
   const RegistrarDashboard({super.key});
@@ -19,38 +21,35 @@ class RegistrarDashboard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              // go to notifications page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsPage(role: "registrar"),
+                ),
+              );
             },
-            child: const Text(
-              "Notifications",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Notifications", style: TextStyle(color: Colors.white)),
           ),
-
           TextButton(
             onPressed: () {
-              // go to events page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EventsPage(role: 'registrar'),
+                ),
+              );
             },
-            child: const Text(
-              "Events",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Events", style: TextStyle(color: Colors.white)),
           ),
-
           TextButton(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ),
+                MaterialPageRoute(builder: (context) => const HomePage()),
                 (route) => false,
               );
             },
-            child: const Text(
-              "Logout",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Logout", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -71,7 +70,11 @@ class RegistrarDashboard extends StatelessWidget {
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.app_registration, color: Colors.teal, size: 35),
+                    child: Icon(
+                      Icons.app_registration,
+                      color: Colors.teal,
+                      size: 35,
+                    ),
                   ),
                   SizedBox(width: 20),
                   Expanded(
@@ -80,10 +83,17 @@ class RegistrarDashboard extends StatelessWidget {
                       children: [
                         Text(
                           "Welcome Registrar",
-                          style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         SizedBox(height: 5),
-                        Text("Manage registrations and records.", style: TextStyle(color: Colors.white70)),
+                        Text(
+                          "Manage registrations and records.",
+                          style: TextStyle(color: Colors.white70),
+                        ),
                       ],
                     ),
                   ),
@@ -97,13 +107,17 @@ class RegistrarDashboard extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const PendingRegistrationsPage()),
+                    MaterialPageRoute(
+                      builder: (_) => const PendingRegistrationsPage(),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text(
                   "View Pending Registrations",

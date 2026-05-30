@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../home_page.dart';
+import '../notifications/notification_page.dart';
+import '../events/events_page.dart';
 
 class TeacherDashboard extends StatelessWidget {
   const TeacherDashboard({super.key});
@@ -7,16 +9,8 @@ class TeacherDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final assignments = [
-      {
-        "title": "Mathematics Homework",
-        "class": "Grade 5",
-        "due": "Tomorrow"
-      },
-      {
-        "title": "Science Project",
-        "class": "Grade 6",
-        "due": "Friday"
-      },
+      {"title": "Mathematics Homework", "class": "Grade 5", "due": "Tomorrow"},
+      {"title": "Science Project", "class": "Grade 6", "due": "Friday"},
     ];
 
     return Scaffold(
@@ -34,38 +28,36 @@ class TeacherDashboard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              // go to notifications page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsPage(role: "teacher"),
+                ),
+              );
             },
-            child: const Text(
-              "Notifications",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Notifications", style: TextStyle(color: Colors.white)),
           ),
-
           TextButton(
             onPressed: () {
-              // go to events page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EventsPage(role: 'teacher'),
+                ),
+              );
             },
-            child: const Text(
-              "Events",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Events", style: TextStyle(color: Colors.white)),
           ),
 
           TextButton(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ),
+                MaterialPageRoute(builder: (context) => const HomePage()),
                 (route) => false,
               );
             },
-            child: const Text(
-              "Logout",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Logout", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -76,16 +68,12 @@ class TeacherDashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Container(
               padding: const EdgeInsets.all(25),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF4F46E5),
-                    Color(0xFF7C3AED),
-                  ],
+                  colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
                 ),
               ),
 
@@ -94,19 +82,14 @@ class TeacherDashboard extends StatelessWidget {
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.white,
-                    child: Icon(
-                      Icons.school,
-                      color: Colors.indigo,
-                      size: 35,
-                    ),
+                    child: Icon(Icons.school, color: Colors.indigo, size: 35),
                   ),
 
                   SizedBox(width: 20),
 
                   Expanded(
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Welcome Teacher",
@@ -121,9 +104,7 @@ class TeacherDashboard extends StatelessWidget {
 
                         Text(
                           "Manage classes and assignments.",
-                          style: TextStyle(
-                            color: Colors.white70,
-                          ),
+                          style: TextStyle(color: Colors.white70),
                         ),
                       ],
                     ),
@@ -154,10 +135,7 @@ class TeacherDashboard extends StatelessWidget {
 
             const Text(
               "Recent Assignments",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 20),
@@ -171,15 +149,11 @@ class TeacherDashboard extends StatelessWidget {
                 ),
 
                 child: ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.assignment),
-                  ),
+                  leading: const CircleAvatar(child: Icon(Icons.assignment)),
 
                   title: Text(item["title"]!),
 
-                  subtitle: Text(
-                    "${item["class"]} • Due ${item["due"]}",
-                  ),
+                  subtitle: Text("${item["class"]} • Due ${item["due"]}"),
 
                   trailing: const Icon(Icons.arrow_forward_ios),
                 ),
@@ -191,12 +165,7 @@ class TeacherDashboard extends StatelessWidget {
     );
   }
 
-  Widget _statCard(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _statCard(String title, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(20),
 
@@ -214,16 +183,10 @@ class TeacherDashboard extends StatelessWidget {
 
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
 
-          Text(
-            title,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(title, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );

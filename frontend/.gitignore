@@ -43,3 +43,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+# Flutter generated files
+linux/flutter/generated_plugins.cmake
+windows/flutter/generated_plugins.cmake
+
+# Backend uploads
+backend/uploads/

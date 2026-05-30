@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../home_page.dart';
+import '../notifications/notification_page.dart';
+import '../events/events_page.dart';
 
 class ParentDashboard extends StatelessWidget {
   const ParentDashboard({super.key});
@@ -21,38 +23,37 @@ class ParentDashboard extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              // go to notifications page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationsPage(role: "parent"),
+                ),
+              );
             },
-            child: const Text(
-              "Notifications",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Notifications", style: TextStyle(color: Colors.white)),
           ),
 
           TextButton(
             onPressed: () {
-              // go to events page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EventsPage(role: 'parent'),
+                ),
+              );
             },
-            child: const Text(
-              "Events",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Events", style: TextStyle(color: Colors.white)),
           ),
 
           TextButton(
             onPressed: () {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ),
+                MaterialPageRoute(builder: (context) => const HomePage()),
                 (route) => false,
               );
             },
-            child: const Text(
-              "Logout",
-              style: TextStyle(color: Colors.white),
-            ),
+            child: const Text("Logout", style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -63,23 +64,18 @@ class ParentDashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             Container(
               padding: const EdgeInsets.all(25),
 
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 gradient: const LinearGradient(
-                  colors: [
-                    Colors.green,
-                    Colors.lightGreen,
-                  ],
+                  colors: [Colors.green, Colors.lightGreen],
                 ),
               ),
 
               child: const Row(
                 children: [
-
                   CircleAvatar(
                     radius: 30,
                     backgroundColor: Colors.white,
@@ -94,10 +90,8 @@ class ParentDashboard extends StatelessWidget {
 
                   Expanded(
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Text(
                           "Welcome Parent",
                           style: TextStyle(
@@ -111,9 +105,7 @@ class ParentDashboard extends StatelessWidget {
 
                         Text(
                           "Track your child’s school activities.",
-                          style: TextStyle(
-                            color: Colors.white70,
-                          ),
+                          style: TextStyle(color: Colors.white70),
                         ),
                       ],
                     ),
@@ -145,12 +137,7 @@ class ParentDashboard extends StatelessWidget {
     );
   }
 
-  Widget _card(
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
+  Widget _card(String title, String value, IconData icon, Color color) {
     return Container(
       padding: const EdgeInsets.all(20),
 
@@ -162,25 +149,16 @@ class ParentDashboard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Icon(icon, color: color, size: 35),
 
           const Spacer(),
 
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
 
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
+          Text(title, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );

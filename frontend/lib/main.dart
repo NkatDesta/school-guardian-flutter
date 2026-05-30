@@ -6,7 +6,6 @@ import 'screens/teacher/teacher_dashboard.dart';
 import 'screens/registrar/registrar_dashboard.dart';
 import 'screens/director/director_dashboard.dart';
 import 'screens/parent/register_page.dart';
-
 void main() {
   runApp(const MyApp());
 }

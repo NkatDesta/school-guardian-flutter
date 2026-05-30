@@ -72,10 +72,8 @@ class _LoginPageState extends State<LoginPage> {
         // Get the token
         final token = data['data']['token'];
 
-        // Store token in RegistrarApi (for registrar role)
-        if (activeRole == 'Registrar') {
-          RegistrarApi.setToken(token);
-        }
+        // Store token globally for any authenticated role
+        RegistrarApi.setToken(token);
 
         ScaffoldMessenger.of(
           context,

@@ -42,7 +42,7 @@ UserModel.init(
       field: 'password_hash',
     },
     role: {
-      type: DataTypes.ENUM(...Object.values(UserRole)),
+      type: DataTypes.STRING(50),
       allowNull: false,
       field: 'role',
     },
